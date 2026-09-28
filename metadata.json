@@ -1,0 +1,8 @@
+{
+  "name": "Apex Union",
+  "description": "Connecting Skilled Workers, Cooperatives and Customers on One Digital Platform with AI-assisted matching, workforce allocation, and management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
