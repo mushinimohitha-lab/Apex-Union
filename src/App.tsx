@@ -7,7 +7,6 @@ import { CustomerDashboard } from './components/customer/CustomerDashboard';
 import { CooperativeDashboard } from './components/cooperative/CooperativeDashboard';
 import { PlatformAdminDashboard } from './components/platform/PlatformAdminDashboard';
 import { AIFeaturesPage } from './components/pages/AIFeaturesPage';
-import { ArchitecturePage } from './components/pages/ArchitecturePage';
 import { AboutPage } from './components/pages/AboutPage';
 import { PrivacyPage } from './components/pages/PrivacyPage';
 
@@ -19,8 +18,29 @@ import { InvoiceModal } from './components/modals/InvoiceModal';
 import { ReviewModal } from './components/modals/ReviewModal';
 import { WorkerProfileModal } from './components/modals/WorkerProfileModal';
 import { WorkerVerificationModal } from './components/modals/WorkerVerificationModal';
-import { ServiceCategoryKey } from './types';
+import { PageNavigationHeader } from './components/common/PageNavigationHeader';
+import { ServiceCategoryKey, UserRole } from './types';
 import { ShieldCheck, UserCheck, X } from 'lucide-react';
+
+const VIEW_MAP: Record<string, { label: string; role?: UserRole }> = {
+  landing: { label: 'Home' },
+  customer_dashboard: { label: 'Customer Portal', role: 'customer' },
+  cooperative_dashboard: { label: 'Cooperative Admin', role: 'cooperative_admin' },
+  platform_dashboard: { label: 'Platform Admin', role: 'platform_admin' },
+  ai_features: { label: 'AI Features' },
+  about: { label: 'About Apex Union' },
+  privacy: { label: 'Privacy Policy' }
+};
+
+const VIEW_ORDER = [
+  'landing',
+  'customer_dashboard',
+  'cooperative_dashboard',
+  'platform_dashboard',
+  'ai_features',
+  'about',
+  'privacy'
+];
 
 const MainAppContent: React.FC = () => {
   const {
@@ -45,7 +65,10 @@ const MainAppContent: React.FC = () => {
     setIsWorkerProfileModalOpen
   } = useApp();
 
-  const [currentView, setCurrentView] = useState<string>('landing');
+  const [history, setHistory] = useState<string[]>(['landing']);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+  const currentView = history[historyIndex] || 'landing';
+
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<ServiceCategoryKey>('plumbing');
 
   // Customer Registration Modal State
@@ -62,20 +85,75 @@ const MainAppContent: React.FC = () => {
 
   const handleNavigate = (view: string) => {
     if (view === 'terms') {
-      setCurrentView('landing');
+      handleNavigate('landing');
       setTimeout(() => {
         const el = document.getElementById('terms-and-conditions');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
       return;
     }
-    setCurrentView(view);
+
+    // Role auto-synchronization for separate portals
+    if (view === 'customer_dashboard' && currentUser.role !== 'customer') {
+      switchRole('customer');
+    } else if (view === 'cooperative_dashboard' && currentUser.role !== 'cooperative_admin') {
+      switchRole('cooperative_admin');
+    } else if (view === 'platform_dashboard' && currentUser.role !== 'platform_admin') {
+      switchRole('platform_admin');
+    }
+
+    if (view === currentView) return;
+
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push(view);
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleGoBack = () => {
+    if (historyIndex > 0) {
+      const prevView = history[historyIndex - 1];
+      if (VIEW_MAP[prevView]?.role && currentUser.role !== VIEW_MAP[prevView].role) {
+        switchRole(VIEW_MAP[prevView].role!);
+      }
+      setHistoryIndex(historyIndex - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const currIdx = VIEW_ORDER.indexOf(currentView);
+      const prevIdx = currIdx > 0 ? currIdx - 1 : VIEW_ORDER.length - 1;
+      const targetView = VIEW_ORDER[prevIdx];
+      handleNavigate(targetView);
+    }
+  };
+
+  const handleGoForward = () => {
+    if (historyIndex < history.length - 1) {
+      const nextView = history[historyIndex + 1];
+      if (VIEW_MAP[nextView]?.role && currentUser.role !== VIEW_MAP[nextView].role) {
+        switchRole(VIEW_MAP[nextView].role!);
+      }
+      setHistoryIndex(historyIndex + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const currIdx = VIEW_ORDER.indexOf(currentView);
+      const nextIdx = (currIdx + 1) % VIEW_ORDER.length;
+      const targetView = VIEW_ORDER[nextIdx];
+      handleNavigate(targetView);
+    }
+  };
+
+  const prevPageName = historyIndex > 0
+    ? VIEW_MAP[history[historyIndex - 1]]?.label || 'Previous'
+    : VIEW_MAP[VIEW_ORDER[(VIEW_ORDER.indexOf(currentView) - 1 + VIEW_ORDER.length) % VIEW_ORDER.length]]?.label || 'Previous';
+
+  const nextPageName = historyIndex < history.length - 1
+    ? VIEW_MAP[history[historyIndex + 1]]?.label || 'Next'
+    : VIEW_MAP[VIEW_ORDER[(VIEW_ORDER.indexOf(currentView) + 1) % VIEW_ORDER.length]]?.label || 'Next';
+
   const handleCategorySelectFromLanding = (cat: ServiceCategoryKey) => {
     setActiveCategoryFilter(cat);
-    setCurrentView('customer_dashboard');
+    handleNavigate('customer_dashboard');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -100,34 +178,101 @@ const MainAppContent: React.FC = () => {
     currentUser.preferredLanguage = regLanguage;
 
     setShowAuthModal(false);
-    setCurrentView('customer_dashboard');
+    handleNavigate('customer_dashboard');
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
-      <Navbar currentView={currentView} onNavigate={handleNavigate} />
+      <Navbar
+        currentView={currentView}
+        onNavigate={handleNavigate}
+        onBack={handleGoBack}
+        onMove={handleGoForward}
+        prevPageName={prevPageName}
+        nextPageName={nextPageName}
+      />
+
+      {/* Persistent Page Navigation Bar with Back & Move Arrows across ALL pages */}
+      <PageNavigationHeader
+        currentView={currentView}
+        onNavigate={handleNavigate}
+        onBack={handleGoBack}
+        onMove={handleGoForward}
+        prevPageName={prevPageName}
+        nextPageName={nextPageName}
+      />
 
       <main className="flex-1">
         {currentView === 'landing' && (
           <LandingPage
             onNavigate={handleNavigate}
             onSelectCategory={handleCategorySelectFromLanding}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
           />
         )}
 
-        {currentView === 'customer_dashboard' && <CustomerDashboard />}
+        {currentView === 'customer_dashboard' && (
+          <CustomerDashboard
+            onNavigate={handleNavigate}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
+          />
+        )}
 
-        {currentView === 'cooperative_dashboard' && <CooperativeDashboard />}
+        {currentView === 'cooperative_dashboard' && (
+          <CooperativeDashboard
+            onNavigate={handleNavigate}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
+          />
+        )}
 
-        {currentView === 'platform_dashboard' && <PlatformAdminDashboard />}
+        {currentView === 'platform_dashboard' && (
+          <PlatformAdminDashboard
+            onNavigate={handleNavigate}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
+          />
+        )}
 
-        {currentView === 'ai_features' && <AIFeaturesPage />}
+        {currentView === 'ai_features' && (
+          <AIFeaturesPage
+            onNavigate={handleNavigate}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
+          />
+        )}
 
-        {currentView === 'tech_stack' && <ArchitecturePage />}
+        {currentView === 'about' && (
+          <AboutPage
+            onNavigate={handleNavigate}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
+          />
+        )}
 
-        {currentView === 'about' && <AboutPage />}
-
-        {currentView === 'privacy' && <PrivacyPage />}
+        {currentView === 'privacy' && (
+          <PrivacyPage
+            onNavigate={handleNavigate}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
+          />
+        )}
       </main>
 
       <Footer onNavigate={handleNavigate} />

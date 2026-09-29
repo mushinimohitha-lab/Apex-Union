@@ -138,7 +138,12 @@ export const CategoryIcon: React.FC<{
     case 'carpentry':
       return <Hammer className={className} />;
     case 'ac_service':
+    case 'ac_servicing':
       return <ACIcon className={className} />;
+    case 'ac_installation':
+      return <AirConditionerIcon className={className} />;
+    case 'civil_mesthri':
+      return <Building2 className={className} />;
     case 'gardening':
       return <Flower2 className={className} />;
     case 'painting':

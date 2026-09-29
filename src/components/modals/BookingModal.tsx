@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { CategoryIcon } from '../common/IconHelper';
 import { DemoIntegrationBadge } from '../common/DemoIntegrationBadge';
+import { VoiceInputButton } from '../common/VoiceInputButton';
 
 interface Props {
   worker: Worker | null;
@@ -33,7 +34,8 @@ export const BookingModal: React.FC<Props> = ({
     currentUser,
     createBooking,
     setSelectedBooking,
-    setIsTrackingModalOpen
+    setIsTrackingModalOpen,
+    t
   } = useApp();
 
   const [problemDescription, setProblemDescription] = useState(
@@ -92,7 +94,7 @@ export const BookingModal: React.FC<Props> = ({
               <DemoIntegrationBadge status="demo" label="Interactive Flow" />
             </div>
             <h2 className="text-lg font-bold text-slate-900 mt-1">
-              Book Verified Cooperative Worker
+              {t('booking.title', 'Book Verified Cooperative Worker')}
             </h2>
           </div>
           <button
@@ -117,7 +119,7 @@ export const BookingModal: React.FC<Props> = ({
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
               </div>
               <p className="text-xs text-slate-500 capitalize">
-                {worker.serviceCategory.replace('_', ' ')} · {worker.experienceYears} Years Exp.
+                {t(`cat.${worker.serviceCategory}`, worker.serviceCategory.replace('_', ' '))} · {worker.experienceYears} Years Exp.
               </p>
               <p className="text-[11px] text-indigo-700 font-medium truncate max-w-[260px]">
                 {worker.cooperativeName}
@@ -125,33 +127,50 @@ export const BookingModal: React.FC<Props> = ({
             </div>
           </div>
           <div className="text-right">
-            <span className="text-xs text-slate-400 block">Standard Rate</span>
+            <span className="text-xs text-slate-400 block">{t('booking.standard_rate', 'Standard Rate')}</span>
             <span className="text-base font-bold text-slate-900">₹{worker.hourlyRate}</span>
-            <span className="text-[10px] text-emerald-600 block font-medium">Cooperative Fixed</span>
+            <span className="text-[10px] text-emerald-600 block font-medium">{t('booking.coop_fixed', 'Cooperative Fixed')}</span>
           </div>
         </div>
 
         {/* Booking Form */}
         <form onSubmit={handleBookingSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Describe Problem / Requirement
-            </label>
-            <textarea
-              rows={2}
-              required
-              value={problemDescription}
-              onChange={e => setProblemDescription(e.target.value)}
-              placeholder="e.g. Kitchen tap leak under sink; need urgent replacement valve."
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
-            />
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold text-slate-700">
+                {t('booking.desc_label', 'Describe Problem / Requirement')}
+              </label>
+              <VoiceInputButton
+                onTranscript={(text) => setProblemDescription(text)}
+                currentValue={problemDescription}
+                variant="badge"
+                buttonLabel={t('nlp.speak_btn', 'Speak Problem')}
+              />
+            </div>
+            <div className="relative">
+              <textarea
+                rows={2}
+                required
+                value={problemDescription}
+                onChange={e => setProblemDescription(e.target.value)}
+                placeholder={t('booking.desc_placeholder', 'e.g. Kitchen tap leak under sink...')}
+                className="w-full pl-3 pr-10 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
+              />
+              <div className="absolute right-2 bottom-2">
+                <VoiceInputButton
+                  onTranscript={(text) => setProblemDescription(text)}
+                  currentValue={problemDescription}
+                  variant="icon"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                Service Date
+                {t('booking.date', 'Service Date')}
               </label>
               <input
                 type="date"
@@ -164,7 +183,7 @@ export const BookingModal: React.FC<Props> = ({
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5 text-slate-500" />
-                Preferred Time Slot
+                {t('booking.time', 'Preferred Time Slot')}
               </label>
               <select
                 value={scheduledTime}
@@ -172,7 +191,7 @@ export const BookingModal: React.FC<Props> = ({
                 className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white"
               >
                 <option value="09:00 AM - 10:30 AM">09:00 AM - 10:30 AM</option>
-                <option value="11:00 AM - 12:30 PM">11:00 AM - 12:30 PM (Immediate)</option>
+                <option value="11:00 AM - 12:30 PM">11:00 AM - 12:30 PM</option>
                 <option value="02:00 PM - 03:30 PM">02:00 PM - 03:30 PM</option>
                 <option value="04:30 PM - 06:00 PM">04:30 PM - 06:00 PM</option>
               </select>
@@ -182,7 +201,7 @@ export const BookingModal: React.FC<Props> = ({
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5 text-rose-500" />
-              Service Address
+              {t('booking.address', 'Service Address')}
             </label>
             <input
               type="text"
@@ -219,21 +238,21 @@ export const BookingModal: React.FC<Props> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              className="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition-all flex items-center gap-2"
+              className="px-5 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer"
             >
               {isSubmitting ? (
                 <span>Generating Booking...</span>
               ) : (
                 <>
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Confirm Booking</span>
+                  <span>{t('booking.confirm_btn', 'Confirm & Book Worker')}</span>
                 </>
               )}
             </button>

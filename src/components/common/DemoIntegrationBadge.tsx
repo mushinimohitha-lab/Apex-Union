@@ -42,7 +42,7 @@ export const DemoIntegrationBadge: React.FC<Props> = ({
 
   return (
     <span
-      title="Production integration planned in system architecture (FastAPI / PostgreSQL / AWS)"
+      title="Production integration planned for verified cooperative scale (PostgreSQL / Cloud API)"
       className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-medium tracking-tight rounded-md bg-slate-100 text-slate-700 border border-slate-200 ${className}`}
     >
       {showIcon && <Milestone className="w-3 h-3 text-slate-500" />}

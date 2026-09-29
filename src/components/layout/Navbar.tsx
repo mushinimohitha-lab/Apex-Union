@@ -12,21 +12,39 @@ import {
   Building2,
   UserCheck,
   Home,
-  Cpu,
   X,
-  ScrollText
+  ScrollText,
+  Globe2,
+  Info,
+  ArrowLeft,
+  ArrowRight,
+  Users
 } from 'lucide-react';
 import { DemoIntegrationBadge } from '../common/DemoIntegrationBadge';
-import { ApexUnionEmblem } from '../common/ApexUnionEmblem';
+import { AULogo } from '../common/AULogo';
+import { SUPPORTED_LANGUAGES_LIST } from '../../utils/translations';
 
 interface NavbarProps {
   currentView: string;
   onNavigate: (view: string) => void;
+  onBack?: () => void;
+  onMove?: () => void;
+  prevPageName?: string;
+  nextPageName?: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  currentView,
+  onNavigate,
+  onBack,
+  onMove,
+  prevPageName = 'Previous',
+  nextPageName = 'Next'
+}) => {
   const {
     currentUser,
+    currentLanguage,
+    t,
     switchRole,
     updateCustomerLocation,
     updateLanguage,
@@ -40,10 +58,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
 
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [tempLocation, setTempLocation] = useState(currentUser.location);
 
   const unreadCount = notifications.filter(n => !n.read).length;
+  const currentLangObj = SUPPORTED_LANGUAGES_LIST.find(l => l.code === currentLanguage) || SUPPORTED_LANGUAGES_LIST[0];
 
   const handleRoleSelect = (role: UserRole) => {
     switchRole(role);
@@ -65,17 +85,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
         <div className="bg-slate-900 text-slate-300 text-xs py-1.5 px-4 border-b border-slate-800">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-amber-400">APEX UNION PROTOTYPE</span>
+              <span className="font-semibold text-amber-400">{t('brand.name')}</span>
               <span className="text-slate-500">·</span>
-              <span className="hidden sm:inline">Connecting Skilled Workers, Cooperatives & Customers</span>
+              <span className="hidden sm:inline">{t('brand.subtitle')}</span>
             </div>
             <div className="flex items-center gap-3">
-              <DemoIntegrationBadge status="demo" label="Working Model" />
+              <DemoIntegrationBadge status="demo" label="Verified Cooperative Platform" />
               <span className="text-slate-500">|</span>
               <div className="flex items-center gap-1.5 text-[11px]">
-                <span className="text-slate-400">Active Role:</span>
+                <span className="text-slate-400">{t('nav.role')}:</span>
                 <span className="text-white font-medium capitalize bg-slate-800 px-2 py-0.5 rounded">
-                  {currentUser.role.replace('_', ' ')}
+                  {t(`role.${currentUser.role}`, currentUser.role.replace('_', ' '))}
                 </span>
               </div>
             </div>
@@ -85,60 +105,99 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
         {/* Main Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-4">
-            {/* Professional Logo with Graphical Emblem Representing Unity & Skilled Workmanship */}
-            <div className="flex items-center gap-6">
+            {/* AU Logo with Official Emblem Badge & Quick Navigation Arrows */}
+            <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => onNavigate('landing')}
                 className="flex items-center group text-left cursor-pointer transition-transform hover:scale-[1.02] focus:outline-none"
-                aria-label="Apex Union Home: Unity and Skilled Workmanship"
+                aria-label="Apex Union AU Home"
               >
-                <ApexUnionEmblem
+                <AULogo
                   size="sm"
                   variant="dark"
                   showText={true}
-                  subtitle="Labour Cooperatives Federation"
+                  subtitle={t('brand.subtitle')}
                 />
               </button>
 
-              {/* Navigation Links */}
-              <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-slate-600">
+              {/* Quick Navigation Arrows */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                <button
+                  onClick={onBack}
+                  title={`Back to ${prevPageName}`}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 text-slate-600 group-hover:-translate-x-0.5 transition-transform" />
+                  <span className="hidden xl:inline">Back</span>
+                </button>
+                <button
+                  onClick={onMove}
+                  title={`Move to ${nextPageName}`}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold text-amber-950 bg-amber-300/80 hover:bg-amber-300 hover:shadow-2xs transition-all cursor-pointer group"
+                >
+                  <span className="hidden xl:inline">Move</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-amber-900 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </div>
+
+              {/* Navigation Links with Separate Customer & Cooperative Admin portals */}
+              <nav className="hidden lg:flex items-center gap-1.5 text-sm font-medium text-slate-600">
                 <button
                   onClick={() => onNavigate('landing')}
-                  className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                    currentView === 'landing' ? 'text-slate-950 bg-slate-100 font-semibold' : 'hover:text-slate-950 hover:bg-slate-50'
+                  className={`px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer text-xs ${
+                    currentView === 'landing' ? 'text-slate-950 bg-slate-100 font-bold' : 'hover:text-slate-950 hover:bg-slate-50'
                   }`}
                 >
-                  Home
+                  {t('nav.home')}
                 </button>
+
+                {/* SEPARATE: Customer Portal */}
                 <button
                   onClick={() => {
-                    if (currentUser.role !== 'customer') switchRole('customer');
+                    switchRole('customer');
                     onNavigate('customer_dashboard');
                   }}
-                  className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                    currentView === 'customer_dashboard' ? 'text-slate-950 bg-slate-100 font-semibold' : 'hover:text-slate-950 hover:bg-slate-50'
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    currentView === 'customer_dashboard'
+                      ? 'bg-amber-400 text-slate-950 shadow-sm ring-2 ring-amber-400/50'
+                      : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
                   }`}
+                  title="Enter Customer Portal"
                 >
-                  Customer Portal
+                  <Users className="w-3.5 h-3.5 text-amber-900" />
+                  <span>Customer Portal</span>
                 </button>
+
+                {/* SEPARATE: Cooperative Admin */}
                 <button
-                  onClick={() => onNavigate('ai_features')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                    currentView === 'ai_features' ? 'text-indigo-950 bg-indigo-50 font-semibold' : 'hover:text-indigo-900 hover:bg-slate-50'
+                  onClick={() => {
+                    switchRole('cooperative_admin');
+                    onNavigate('cooperative_dashboard');
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    currentView === 'cooperative_dashboard'
+                      ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-500/50'
+                      : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200'
                   }`}
+                  title="Enter Cooperative Admin Portal"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>AI Architecture</span>
+                  <Building2 className="w-3.5 h-3.5 text-indigo-700" />
+                  <span>Cooperative Admin</span>
                 </button>
+
                 <button
-                  onClick={() => onNavigate('tech_stack')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                    currentView === 'tech_stack' ? 'text-slate-950 bg-slate-100 font-semibold' : 'hover:text-slate-950 hover:bg-slate-50'
+                  onClick={() => {
+                    if (currentUser.role !== 'platform_admin') switchRole('platform_admin');
+                    onNavigate('platform_dashboard');
+                  }}
+                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer text-xs ${
+                    currentView === 'platform_dashboard' ? 'text-emerald-950 bg-emerald-50 font-semibold' : 'hover:text-emerald-900 hover:bg-slate-50'
                   }`}
                 >
-                  <Cpu className="w-3.5 h-3.5 text-slate-500" />
-                  <span>System Design</span>
+                  <Layers className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Federation</span>
                 </button>
+
                 <button
                   onClick={() => {
                     if (currentView !== 'landing') {
@@ -152,18 +211,18 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-slate-700 hover:text-slate-950 hover:bg-slate-100"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer text-xs text-slate-700 hover:text-slate-950 hover:bg-slate-100"
                 >
                   <ScrollText className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Terms & Conditions</span>
+                  <span>{t('nav.terms')}</span>
                 </button>
                 <button
                   onClick={() => onNavigate('about')}
-                  className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                  className={`px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer text-xs ${
                     currentView === 'about' ? 'text-slate-950 bg-slate-100 font-semibold' : 'hover:text-slate-950 hover:bg-slate-50'
                   }`}
                 >
-                  About Union
+                  {t('nav.about')}
                 </button>
               </nav>
             </div>
@@ -173,36 +232,77 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               {/* Location Selector (Customer) */}
               <button
                 onClick={() => setShowLocationModal(true)}
-                className="hidden lg:flex items-center gap-1.5 text-xs text-slate-700 bg-slate-100 hover:bg-slate-200/80 px-2.5 py-1.5 rounded-lg transition-colors border border-slate-200/60"
-                title="Change active location for distance matching"
+                className="hidden md:flex items-center gap-1.5 text-xs text-slate-700 bg-slate-100 hover:bg-slate-200/80 px-2.5 py-1.5 rounded-lg transition-colors border border-slate-200/60 cursor-pointer"
+                title={t('nav.change_location')}
               >
                 <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                <span className="truncate max-w-[130px] font-medium">{currentUser.location.split(',')[0]}</span>
+                <span className="truncate max-w-[120px] font-medium">{currentUser.location.split(',')[0]}</span>
               </button>
 
-              {/* Language Switcher */}
-              <div className="hidden sm:flex items-center bg-slate-100 rounded-lg p-0.5 border border-slate-200 text-xs font-medium">
-                {(['en', 'te', 'hi'] as LanguageCode[]).map(lang => (
-                  <button
-                    key={lang}
-                    onClick={() => updateLanguage(lang)}
-                    className={`px-2 py-1 rounded transition-colors ${
-                      currentUser.preferredLanguage === lang
-                        ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                        : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    {lang === 'en' ? 'EN' : lang === 'te' ? 'తెలుగు' : 'हिंदी'}
-                  </button>
-                ))}
+              {/* Dynamic Regional Language Switcher Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setShowLangMenu(!showLangMenu);
+                    setShowRoleMenu(false);
+                    setShowNotifMenu(false);
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 text-xs font-semibold transition-all cursor-pointer"
+                  title="Change Application Language"
+                  aria-label="Change Application Language"
+                >
+                  <Globe2 className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>{currentLangObj.nativeName}</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+
+                {showLangMenu && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-slate-200 p-2 z-50 animate-in fade-in max-h-96 overflow-y-auto">
+                    <div className="px-3 py-1.5 border-b border-slate-100 mb-1">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                        Regional Languages / భాషలు / भाषाएँ
+                      </span>
+                    </div>
+                    <div className="space-y-1">
+                      {SUPPORTED_LANGUAGES_LIST.map(lang => {
+                        const isSelected = currentLanguage === lang.code;
+                        return (
+                          <button
+                            key={lang.code}
+                            type="button"
+                            onClick={() => {
+                              updateLanguage(lang.code);
+                              setShowLangMenu(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                              isSelected
+                                ? 'bg-amber-50 text-amber-950 font-bold border border-amber-300'
+                                : 'hover:bg-slate-50 text-slate-700'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-slate-900">{lang.nativeName}</span>
+                              <span className="text-[10px] text-slate-400">({lang.label})</span>
+                            </div>
+                            {isSelected && <Check className="w-4 h-4 text-amber-600" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Notifications */}
               <div className="relative">
                 <button
-                  onClick={() => setShowNotifMenu(!showNotifMenu)}
-                  className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                  aria-label="View notifications"
+                  onClick={() => {
+                    setShowNotifMenu(!showNotifMenu);
+                    setShowRoleMenu(false);
+                    setShowLangMenu(false);
+                  }}
+                  className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                  aria-label={t('nav.notifications')}
                 >
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
@@ -216,7 +316,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                   <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-slate-200 p-3 z-50 animate-in fade-in slide-in-from-top-2">
                     <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-900 text-sm">Notifications</span>
+                        <span className="font-semibold text-slate-900 text-sm">{t('nav.notifications')}</span>
                         <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
                           {notifications.length}
                         </span>
@@ -224,7 +324,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                       {unreadCount > 0 && (
                         <button
                           onClick={markAllNotificationsRead}
-                          className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                          className="text-xs text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
                         >
                           Mark all read
                         </button>
@@ -269,8 +369,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               {/* Role Switcher Dropdown */}
               <div className="relative">
                 <button
-                  onClick={() => setShowRoleMenu(!showRoleMenu)}
-                  className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-all text-left"
+                  onClick={() => {
+                    setShowRoleMenu(!showRoleMenu);
+                    setShowNotifMenu(false);
+                    setShowLangMenu(false);
+                  }}
+                  className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-all text-left cursor-pointer"
                 >
                   <img
                     src={currentUser.avatarUrl}
@@ -282,7 +386,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                       {currentUser.name}
                     </p>
                     <p className="text-[10px] text-slate-500 font-medium capitalize">
-                      {currentUser.role.replace('_', ' ')}
+                      {t(`role.${currentUser.role}`, currentUser.role.replace('_', ' '))}
                     </p>
                   </div>
                   <ChevronDown className="w-4 h-4 text-slate-500" />
@@ -292,10 +396,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                   <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 p-2 z-50 animate-in fade-in">
                     <div className="px-3 py-2 border-b border-slate-100">
                       <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Switch Operational Role
+                        Switch Operational Portal
                       </p>
                       <p className="text-xs text-slate-500 mt-0.5">
-                        Test end-to-end multi-role workflows as required by PRD.
+                        Access Customer, Cooperative Admin, or Platform Admin portals.
                       </p>
                     </div>
 
@@ -303,7 +407,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                       {/* Customer */}
                       <button
                         onClick={() => handleRoleSelect('customer')}
-                        className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left transition-colors ${
+                        className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left transition-colors cursor-pointer ${
                           currentUser.role === 'customer'
                             ? 'bg-amber-50 text-amber-950 font-semibold border border-amber-200'
                             : 'hover:bg-slate-50 text-slate-700'
@@ -314,8 +418,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                             <Home className="w-4 h-4" />
                           </div>
                           <div>
-                            <p className="text-xs font-semibold">1. Customer</p>
-                            <p className="text-[11px] text-slate-500">Service search, NLP request, booking</p>
+                            <p className="text-xs font-semibold">1. {t('role.customer')}</p>
+                            <p className="text-[11px] text-slate-500">Service search, voice problem, booking</p>
                           </div>
                         </div>
                         {currentUser.role === 'customer' && <Check className="w-4 h-4 text-amber-700" />}
@@ -324,7 +428,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                       {/* Cooperative Admin */}
                       <button
                         onClick={() => handleRoleSelect('cooperative_admin')}
-                        className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left transition-colors ${
+                        className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left transition-colors cursor-pointer ${
                           currentUser.role === 'cooperative_admin'
                             ? 'bg-indigo-50 text-indigo-950 font-semibold border border-indigo-200'
                             : 'hover:bg-slate-50 text-slate-700'
@@ -335,8 +439,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                             <Building2 className="w-4 h-4" />
                           </div>
                           <div>
-                            <p className="text-xs font-semibold">2. Cooperative Admin</p>
-                            <p className="text-[11px] text-slate-500">Workforce allocation, OCR & verifications</p>
+                            <p className="text-xs font-semibold">2. {t('role.cooperative_admin')}</p>
+                            <p className="text-[11px] text-slate-500">Society workers, OCR approvals, allocation</p>
                           </div>
                         </div>
                         {currentUser.role === 'cooperative_admin' && <Check className="w-4 h-4 text-indigo-700" />}
@@ -345,7 +449,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                       {/* Platform Admin */}
                       <button
                         onClick={() => handleRoleSelect('platform_admin')}
-                        className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left transition-colors ${
+                        className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left transition-colors cursor-pointer ${
                           currentUser.role === 'platform_admin'
                             ? 'bg-emerald-50 text-emerald-950 font-semibold border border-emerald-200'
                             : 'hover:bg-slate-50 text-slate-700'
@@ -356,8 +460,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                             <Layers className="w-4 h-4" />
                           </div>
                           <div>
-                            <p className="text-xs font-semibold">3. Platform Admin</p>
-                            <p className="text-[11px] text-slate-500">Multi-coop governance, audits, global view</p>
+                            <p className="text-xs font-semibold">3. {t('role.platform_admin')}</p>
+                            <p className="text-[11px] text-slate-500">Multi-coop governance, tariffs, disputes</p>
                           </div>
                         </div>
                         {currentUser.role === 'platform_admin' && <Check className="w-4 h-4 text-emerald-700" />}
@@ -378,11 +482,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-rose-500" />
-                <h3 className="font-bold text-slate-900 text-base">Select Service Location</h3>
+                <h3 className="font-bold text-slate-900 text-base">{t('nav.change_location')}</h3>
               </div>
               <button
                 onClick={() => setShowLocationModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -407,12 +511,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               </div>
 
               <div className="space-y-1 pt-2">
-                <span className="text-[11px] font-semibold text-slate-400 uppercase">Quick Demo Neighborhoods</span>
+                <span className="text-[11px] font-semibold text-slate-400 uppercase">Quick Neighborhoods</span>
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {[
                     'Banjara Hills, Hyderabad',
                     'Jubilee Hills, Hyderabad',
                     'Hitec City, Hyderabad',
+                    'Madhapur, Hyderabad',
                     'Gachibowli, Hyderabad',
                     'Ameerpet, Hyderabad',
                     'Secunderabad, Hyderabad'
@@ -420,7 +525,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                     <button
                       key={loc}
                       onClick={() => setTempLocation(loc)}
-                      className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${
+                      className={`text-xs px-2.5 py-1 rounded-md border transition-colors cursor-pointer ${
                         tempLocation === loc
                           ? 'bg-slate-900 text-white border-slate-900'
                           : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
@@ -435,13 +540,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               <div className="flex justify-end gap-2 pt-4 border-t border-slate-100">
                 <button
                   onClick={() => setShowLocationModal(false)}
-                  className="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg"
+                  className="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleLocationSave}
-                  className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs"
+                  className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs cursor-pointer"
                 >
                   Save Location
                 </button>

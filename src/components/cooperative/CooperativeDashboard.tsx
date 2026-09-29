@@ -22,6 +22,7 @@ import {
   XCircle,
   AlertTriangle,
   ArrowRight,
+  ArrowLeft,
   UserCheck,
   Search,
   Filter,
@@ -34,7 +35,21 @@ import { CategoryIcon } from '../common/IconHelper';
 import { computeWorkforceAllocation } from '../../services/allocationEngine';
 import { DemoIntegrationBadge } from '../common/DemoIntegrationBadge';
 
-export const CooperativeDashboard: React.FC = () => {
+interface CooperativeDashboardProps {
+  onNavigate?: (view: string) => void;
+  onBack?: () => void;
+  onMove?: () => void;
+  prevPageName?: string;
+  nextPageName?: string;
+}
+
+export const CooperativeDashboard: React.FC<CooperativeDashboardProps> = ({
+  onNavigate,
+  onBack,
+  onMove,
+  prevPageName = 'Customer Portal',
+  nextPageName = 'Platform Admin'
+}) => {
   const {
     currentUser,
     workers,
@@ -50,7 +65,8 @@ export const CooperativeDashboard: React.FC = () => {
     setSelectedDocumentInspection,
     setIsWorkerProfileModalOpen,
     setIsTrackingModalOpen,
-    serviceCategories
+    serviceCategories,
+    t
   } = useApp();
 
   // Find active cooperative
@@ -133,13 +149,51 @@ export const CooperativeDashboard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      {/* In-Page Navigation Bar (Back & Move Arrows) */}
+      <div className="bg-white rounded-xl p-3 border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-colors cursor-pointer group"
+          title={`Go back to ${prevPageName}`}
+        >
+          <ArrowLeft className="w-3.5 h-3.5 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
+          <span>Back</span>
+          <span className="hidden sm:inline text-slate-500 font-normal">({prevPageName})</span>
+        </button>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-indigo-950 bg-indigo-100 border border-indigo-300 px-2.5 py-1 rounded-md">
+            Cooperative Admin Portal
+          </span>
+          <span className="text-slate-300 hidden sm:inline">|</span>
+          <button
+            onClick={() => onNavigate && onNavigate('customer_dashboard')}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold transition-colors cursor-pointer"
+            title="Switch to Customer Portal"
+          >
+            <Users className="w-3.5 h-3.5 text-amber-600" />
+            <span>Switch to Customer Portal</span>
+          </button>
+        </div>
+
+        <button
+          onClick={onMove}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition-colors cursor-pointer group shadow-2xs"
+          title={`Move forward to ${nextPageName}`}
+        >
+          <span>Move</span>
+          <span className="hidden sm:inline font-semibold">({nextPageName})</span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+      </div>
+
       {/* Cooperative Header & Banner */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-md border border-indigo-200">
-              Cooperative Operations Secretariat
+              {t('coop.title')}
             </span>
             <DemoIntegrationBadge status="demo" label="Cooperative Workspace" />
           </div>
@@ -153,10 +207,10 @@ export const CooperativeDashboard: React.FC = () => {
 
         <button
           onClick={() => setShowAddWorkerModal(true)}
-          className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm flex items-center gap-1.5 transition-colors self-start md:self-auto"
+          className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm flex items-center gap-1.5 transition-colors self-start md:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4 text-amber-400" />
-          <span>Register New Worker</span>
+          <span>{t('coop.add_worker')}</span>
         </button>
       </div>
 

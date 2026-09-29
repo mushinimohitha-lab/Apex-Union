@@ -12,6 +12,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { DemoIntegrationBadge } from '../common/DemoIntegrationBadge';
+import { useApp } from '../../context/AppContext';
 
 interface Props {
   worker: Worker;
@@ -28,6 +29,7 @@ export const WorkerCard: React.FC<Props> = ({
   onBookWorker,
   isTopRecommendation = false
 }) => {
+  const { t } = useApp();
   return (
     <div
       className={`bg-white rounded-2xl p-5 border transition-all duration-200 flex flex-col justify-between hover:shadow-lg ${
@@ -149,16 +151,16 @@ export const WorkerCard: React.FC<Props> = ({
         <button
           type="button"
           onClick={() => onViewProfile(worker)}
-          className="flex-1 py-2 px-3 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors text-center"
+          className="flex-1 py-2 px-3 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors text-center cursor-pointer"
         >
-          View Profile
+          {t('customer.view_profile', 'View Profile')}
         </button>
         <button
           type="button"
           onClick={() => onBookWorker(worker)}
-          className="flex-1 py-2 px-3 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition-colors text-center flex items-center justify-center gap-1"
+          className="flex-1 py-2 px-3 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition-colors text-center flex items-center justify-center gap-1 cursor-pointer"
         >
-          <span>Book Worker</span>
+          <span>{t('customer.book_worker', 'Book Worker')}</span>
         </button>
       </div>
     </div>

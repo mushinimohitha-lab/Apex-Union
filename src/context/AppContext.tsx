@@ -26,9 +26,12 @@ import {
   INITIAL_AUDIT_LOGS,
   INITIAL_COMPLAINTS
 } from '../data/mockData';
+import { translate } from '../utils/translations';
 
 interface AppContextType {
   currentUser: User;
+  currentLanguage: LanguageCode;
+  t: (key: string, defaultText?: string) => string;
   switchRole: (role: UserRole) => void;
   updateCustomerLocation: (location: string) => void;
   updateLanguage: (lang: LanguageCode) => void;
@@ -101,7 +104,8 @@ const STORAGE_KEYS = {
   BOOKINGS: 'apex_union_bookings_v1',
   REVIEWS: 'apex_union_reviews_v1',
   NOTIFICATIONS: 'apex_union_notifications_v1',
-  AUDIT_LOGS: 'apex_union_audit_v1'
+  AUDIT_LOGS: 'apex_union_audit_v1',
+  LANGUAGE: 'apex_union_lang_v1'
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -112,9 +116,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [currentUser, setCurrentUser] = useState<User>(DEMO_USERS[currentRole] || DEMO_USERS.customer);
 
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.LANGUAGE);
+    return (saved as LanguageCode) || currentUser.preferredLanguage || 'en';
+  });
+
   const [workers, setWorkers] = useState<Worker[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.WORKERS);
-    return saved ? JSON.parse(saved) : INITIAL_WORKERS;
+    if (!saved) return INITIAL_WORKERS;
+    try {
+      const parsed = JSON.parse(saved);
+      const existingIds = new Set(parsed.map((w: Worker) => w.id));
+      const missing = INITIAL_WORKERS.filter(w => !existingIds.has(w.id));
+      return missing.length > 0 ? [...parsed, ...missing] : parsed;
+    } catch {
+      return INITIAL_WORKERS;
+    }
   });
 
   const [cooperatives] = useState<Cooperative[]>(COOPERATIVES);
@@ -190,7 +207,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateLanguage = (lang: LanguageCode) => {
+    setCurrentLanguage(lang);
+    localStorage.setItem(STORAGE_KEYS.LANGUAGE, lang);
     setCurrentUser(prev => ({ ...prev, preferredLanguage: lang }));
+  };
+
+  const t = (key: string, defaultText?: string) => {
+    return translate(key, currentLanguage, defaultText);
   };
 
   const createBooking = (params: {
@@ -635,6 +658,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider
       value={{
         currentUser,
+        currentLanguage,
+        t,
         switchRole,
         updateCustomerLocation,
         updateLanguage,

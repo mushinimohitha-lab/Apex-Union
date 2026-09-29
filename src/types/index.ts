@@ -5,7 +5,17 @@
 
 export type UserRole = 'customer' | 'cooperative_admin' | 'platform_admin';
 
-export type LanguageCode = 'en' | 'te' | 'hi';
+export type LanguageCode =
+  | 'en' // English
+  | 'te' // Telugu (తెలుగు)
+  | 'hi' // Hindi (हिंदी)
+  | 'ta' // Tamil (தமிழ்)
+  | 'or' // Odia / Orissa (ଓଡ଼ିଆ)
+  | 'pa' // Punjabi (ਪੰਜਾਬੀ)
+  | 'ml' // Malayalam (മലയാളം)
+  | 'kn' // Kannada (ಕನ್ನಡ)
+  | 'bn' // Bengali (বাংলা)
+  | 'mr'; // Marathi (मराठी)
 
 export interface User {
   id: string;
@@ -25,6 +35,9 @@ export type ServiceCategoryKey =
   | 'plumbing'
   | 'carpentry'
   | 'ac_service'
+  | 'ac_servicing'
+  | 'ac_installation'
+  | 'civil_mesthri'
   | 'gardening'
   | 'painting'
   | 'cleaning'

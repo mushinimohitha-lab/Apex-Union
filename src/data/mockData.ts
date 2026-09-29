@@ -76,6 +76,33 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     popularTasks: ['Door lock installation', 'Cabinet hinge fix', 'Bed repair', 'Curtain rod fixing']
   },
   {
+    id: 'ac_servicing',
+    name: 'AC Servicing (₹500/hr)',
+    description: 'Deep foam jet wash, chemical coil cleaning, filter sanitization, refrigerant pressure check & cooling efficiency test.',
+    iconName: 'AirConditioner',
+    basePrice: 500,
+    activeWorkersCount: 38,
+    popularTasks: ['Indoor unit deep foam jet wash', 'Outdoor condenser chemical cleaning', 'AC gas pressure test & top-up', 'Blower wheel cleaning']
+  },
+  {
+    id: 'ac_installation',
+    name: 'AC Installation (₹1,000)',
+    description: 'New split & inverter AC wall mounting, copper pipe routing, outdoor unit bracket fixing, vacuuming & commissioning.',
+    iconName: 'AirConditioner',
+    basePrice: 1000,
+    activeWorkersCount: 29,
+    popularTasks: ['New split AC wall mounting', 'Outdoor compressor bracket fixing', 'Copper piping flare & vacuuming', 'Old AC uninstallation']
+  },
+  {
+    id: 'civil_mesthri',
+    name: 'Civil Work / Mesthri',
+    description: 'Master civil mestris for brick masonry, wall plastering, tile & marble flooring, concrete repairs & home structural work.',
+    iconName: 'Building2',
+    basePrice: 600,
+    activeWorkersCount: 34,
+    popularTasks: ['Brick masonry wall construction', 'Tile & marble floor laying', 'Wall plastering & crack patching', 'Bathroom waterproofing & slab repair', 'Compound wall & lintel beam fix']
+  },
+  {
     id: 'ac_service',
     name: 'AC Service',
     description: 'Split & window AC servicing, deep jet wash, gas leak charging, PCB repair & new installation.',
@@ -137,15 +164,15 @@ export const COOPERATIVES: Cooperative[] = [
     rating: 4.85,
     commissionRatePercent: 8,
     establishedYear: 2018,
-    servicesOffered: ['electrical', 'plumbing', 'carpentry', 'ac_service', 'appliance_repair'],
-    description: 'Registered under the Telangana Co-operative Societies Act. A democratically run union empowering skilled mechanical and electrical craftspeople with group health cover, fair wage dividends, and transparent digital bookings.'
+    servicesOffered: ['electrical', 'plumbing', 'carpentry', 'ac_service', 'ac_servicing', 'ac_installation', 'civil_mesthri', 'appliance_repair'],
+    description: 'Registered under the Co-operative Societies Act. A democratically run union empowering skilled mechanical and electrical craftspeople with group health cover, fair wage dividends, and transparent digital bookings.'
   },
   {
     id: 'coop-02',
     name: 'Deccan Green & Environmental Labour Union',
-    registrationNumber: 'TS-COOP-HYD-2020-1402',
+    registrationNumber: 'FED-COOP-HYD-2020-1402',
     district: 'Secunderabad & Cyberabad',
-    state: 'Telangana',
+    state: 'Federation Member',
     presidentName: 'Smt. Lakshmi Bai',
     adminEmail: 'contact@deccangreen.coop',
     phone: '+91 40 2789 1122',
@@ -154,15 +181,15 @@ export const COOPERATIVES: Cooperative[] = [
     rating: 4.79,
     commissionRatePercent: 7,
     establishedYear: 2020,
-    servicesOffered: ['gardening', 'cleaning', 'painting', 'appliance_repair'],
+    servicesOffered: ['gardening', 'cleaning', 'painting', 'ac_installation', 'civil_mesthri', 'appliance_repair'],
     description: 'Focused on sustainable urban services, housekeeping dignity, horticulture, and certified home sanitization workers with progressive cooperative benefits.'
   },
   {
     id: 'coop-03',
-    name: 'Telangana Craftsmen & Infrastructure Labour Federation',
-    registrationNumber: 'TS-COOP-RR-2016-0422',
-    district: 'Ranga Reddy',
-    state: 'Telangana',
+    name: 'Craftsmen & Infrastructure Labour Federation',
+    registrationNumber: 'FED-COOP-RR-2016-0422',
+    district: 'Metro Region',
+    state: 'Federation Member',
     presidentName: 'K. Venkateshwar Rao',
     adminEmail: 'ops@tcilf.org',
     phone: '+91 40 2999 4433',
@@ -171,8 +198,8 @@ export const COOPERATIVES: Cooperative[] = [
     rating: 4.91,
     commissionRatePercent: 9,
     establishedYear: 2016,
-    servicesOffered: ['carpentry', 'painting', 'electrical', 'plumbing'],
-    description: 'One of the oldest certified labour unions in Telangana specializing in interior woodwork, electrical distribution, and certified commercial plumbing.'
+    servicesOffered: ['carpentry', 'painting', 'electrical', 'plumbing', 'ac_servicing', 'civil_mesthri'],
+    description: 'One of the oldest certified labour unions specializing in interior woodwork, masonry, electrical distribution, and certified commercial plumbing.'
   }
 ];
 
@@ -540,6 +567,534 @@ export const INITIAL_WORKERS: Worker[] = [
       }
     ],
     joinedDate: '2019-01-20'
+  },
+  {
+    id: 'wrk-09',
+    name: 'N. Balaraju (Master Civil Mesthri)',
+    phone: '+91 98485 33441',
+    email: 'balaraju.mesthri@metroartisans.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-01',
+    cooperativeName: 'Metro Skilled Artisans & Workers Cooperative',
+    serviceCategory: 'civil_mesthri',
+    skills: ['Brick Masonry', 'Tile & Marble Laying', 'Wall Plastering', 'Slab Waterproofing', 'Structural Foundation'],
+    experienceYears: 14,
+    hourlyRate: 600,
+    rating: 4.96,
+    reviewCount: 185,
+    completedJobsCount: 320,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 1,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Banjara Hills / Film Nagar',
+      lat: 17.4120,
+      lng: 78.4180
+    },
+    serviceRadiusKm: 15,
+    bio: 'Lead Master Mason (తాపీ మేస్త్రి) with 14+ years experience in structural civil work, bricklaying, tile flooring, and foundation waterproofing.',
+    documents: [
+      {
+        id: 'doc-10',
+        workerId: 'wrk-09',
+        title: 'Master Masonry Guild Accreditation',
+        type: 'skill_certificate',
+        fileName: 'Master_Civil_Mesthri_Balaraju.pdf',
+        fileSize: '2.4 MB',
+        uploadDate: '2025-07-10',
+        status: 'verified',
+        ocrExtractedText: 'DIRECTORATE OF VOCATIONAL CRAFTSMEN - Master Civil Construction & Masonry Guild Certificate. Candidate: N. Balaraju. Valid Grade: A.',
+        ocrConfidence: 0.99,
+        verifiedBy: 'Rajesh Kumar (Coop Admin)',
+        verifiedAt: '2025-07-12'
+      }
+    ],
+    joinedDate: '2018-04-10'
+  },
+  {
+    id: 'wrk-10',
+    name: 'Chinnayya Mesthri',
+    phone: '+91 98490 77123',
+    email: 'chinnayya.mesthri@tcilf.org',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-03',
+    cooperativeName: 'Telangana Craftsmen Labour Federation',
+    serviceCategory: 'civil_mesthri',
+    skills: ['Concrete Flooring', 'Brick Wall Construction', 'Plaster Finishing', 'Compound Wall'],
+    experienceYears: 11,
+    hourlyRate: 580,
+    rating: 4.89,
+    reviewCount: 140,
+    completedJobsCount: 260,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 0,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Somajiguda / Punjagutta',
+      lat: 17.4260,
+      lng: 78.4520
+    },
+    serviceRadiusKm: 12,
+    bio: 'Experienced civil worker known across central city for high quality plastering, compound walls, and tile fixing with zero material wastage.',
+    documents: [
+      {
+        id: 'doc-11',
+        workerId: 'wrk-10',
+        title: 'Building & Construction Labour Welfare Board ID',
+        type: 'cooperative_membership',
+        fileName: 'LabourWelfare_Chinnayya.pdf',
+        fileSize: '1.1 MB',
+        uploadDate: '2025-09-18',
+        status: 'verified',
+        ocrExtractedText: 'BUILDING & OTHER CONSTRUCTION WORKERS WELFARE BOARD. Registration No: BOCW-TS-2016-8812. Status: Verified Master Artisan.',
+        ocrConfidence: 0.97,
+        verifiedBy: 'Platform Admin',
+        verifiedAt: '2025-09-20'
+      }
+    ],
+    joinedDate: '2017-09-15'
+  },
+  {
+    id: 'wrk-11',
+    name: 'K. Shiva Prasad',
+    phone: '+91 97011 22334',
+    email: 'shiva.prasad@metroartisans.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-01',
+    cooperativeName: 'Metro Skilled Artisans & Workers Cooperative',
+    serviceCategory: 'ac_servicing',
+    skills: ['Deep Jet Foam Wash', 'Condenser Chemical Wash', 'Gas Pressure Check & Topup', 'Filter Sanitization'],
+    experienceYears: 6,
+    hourlyRate: 500,
+    rating: 4.93,
+    reviewCount: 210,
+    completedJobsCount: 340,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 1,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Madhapur / Durgam Cheruvu',
+      lat: 17.4380,
+      lng: 78.3870
+    },
+    serviceRadiusKm: 14,
+    bio: 'Specialist in AC deep jet foam wash and antibacterial chemical cleaning at cooperative flat ₹500/hr rate. Restores peak cooling power.',
+    documents: [
+      {
+        id: 'doc-12',
+        workerId: 'wrk-11',
+        title: 'HVAC Servicing & Jet Cleaning Certificate',
+        type: 'skill_certificate',
+        fileName: 'AC_Servicing_Shiva.pdf',
+        fileSize: '1.8 MB',
+        uploadDate: '2025-10-12',
+        status: 'verified',
+        ocrExtractedText: 'SKILL INDIA NSQF LEVEL 4 - Room Air Conditioner Service Technician. Certified First Class.',
+        ocrConfidence: 0.98,
+        verifiedBy: 'Rajesh Kumar (Coop Admin)',
+        verifiedAt: '2025-10-15'
+      }
+    ],
+    joinedDate: '2020-02-15'
+  },
+  {
+    id: 'wrk-12',
+    name: 'M. Venkatesh',
+    phone: '+91 98495 66778',
+    email: 'm.venkatesh@metroartisans.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-01',
+    cooperativeName: 'Metro Skilled Artisans & Workers Cooperative',
+    serviceCategory: 'ac_installation',
+    skills: ['Split AC Installation', 'Inverter AC Wall Mount', 'Copper Pipe Flare & Vacuuming', 'Outdoor Bracket Fixing'],
+    experienceYears: 8,
+    hourlyRate: 1000,
+    rating: 4.95,
+    reviewCount: 165,
+    completedJobsCount: 290,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 0,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Hitec City / Kondapur',
+      lat: 17.4520,
+      lng: 78.3680
+    },
+    serviceRadiusKm: 16,
+    bio: 'Dedicated AC installation specialist at fixed ₹1,000 fee. Precision core cutting, copper pipe flaring, and heavy-duty vibration-free outdoor mounting.',
+    documents: [
+      {
+        id: 'doc-13',
+        workerId: 'wrk-12',
+        title: 'RAC Installation Expert Credential',
+        type: 'skill_certificate',
+        fileName: 'AC_Installation_Venkatesh.pdf',
+        fileSize: '2.0 MB',
+        uploadDate: '2025-08-20',
+        status: 'verified',
+        ocrExtractedText: 'NATIONAL VOCATIONAL TRAINING INSTITUTE - Certified Split and Inverter AC Installation Specialist. Grade: Excellent.',
+        ocrConfidence: 0.99,
+        verifiedBy: 'Rajesh Kumar (Coop Admin)',
+        verifiedAt: '2025-08-22'
+      }
+    ],
+    joinedDate: '2019-06-10'
+  },
+  {
+    id: 'wrk-13',
+    name: 'S. Murugan (Master Mason / Mesthri)',
+    phone: '+91 99401 88992',
+    email: 'murugan.mesthri@deccangreen.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-02',
+    cooperativeName: 'Deccan Green & Environmental Labour Union',
+    serviceCategory: 'civil_mesthri',
+    skills: ['Granite & Tile Laying', 'Lintel Beam Construction', 'Waterproofing Plaster', 'Civil Renovation'],
+    experienceYears: 15,
+    hourlyRate: 650,
+    rating: 4.94,
+    reviewCount: 112,
+    completedJobsCount: 215,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 1,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Secunderabad / Paradise',
+      lat: 17.4410,
+      lng: 78.4980
+    },
+    serviceRadiusKm: 14,
+    bio: 'Renowned civil mesthri specializing in stone masonry, granite flooring, and damp-proof plaster restoration. Multilingual artisan (Tamil, Telugu, English).',
+    documents: [
+      {
+        id: 'doc-14',
+        workerId: 'wrk-13',
+        title: 'Master Mason Union Credential',
+        type: 'skill_certificate',
+        fileName: 'Mason_Murugan_Cert.pdf',
+        fileSize: '1.7 MB',
+        uploadDate: '2025-06-14',
+        status: 'verified',
+        ocrExtractedText: 'ALL INDIA CRAFTSMEN GUILD - Master Masonry & Stone Work Specialist. Reg: AICG-2015-4421.',
+        ocrConfidence: 0.98,
+        verifiedBy: 'Lakshmi Bai (Deccan Green Coop)',
+        verifiedAt: '2025-06-16'
+      }
+    ],
+    joinedDate: '2018-02-14'
+  },
+  {
+    id: 'wrk-14',
+    name: 'Farhan Ali (AC Servicing & Gas)',
+    phone: '+91 98499 44332',
+    email: 'farhan.ali@tcilf.org',
+    avatarUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-03',
+    cooperativeName: 'Telangana Craftsmen Labour Federation',
+    serviceCategory: 'ac_servicing',
+    skills: ['Foam Jet Wash', 'Leak Detection & Gas Refill', 'Drain Pipe Unclog', 'Coil Anti-rust Coating'],
+    experienceYears: 5,
+    hourlyRate: 500,
+    rating: 4.90,
+    reviewCount: 130,
+    completedJobsCount: 198,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 1,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Mehdipatnam / Tolichowki',
+      lat: 17.3910,
+      lng: 78.4230
+    },
+    serviceRadiusKm: 13,
+    bio: 'Dedicated AC foam jet wash technician. Provides comprehensive pressure wash, drain cleaning, and gas top-up with transparent cooperative pricing.',
+    documents: [
+      {
+        id: 'doc-15',
+        workerId: 'wrk-14',
+        title: 'Air Conditioning Maintenance Certificate',
+        type: 'skill_certificate',
+        fileName: 'AC_Maint_Farhan.pdf',
+        fileSize: '1.3 MB',
+        uploadDate: '2025-11-10',
+        status: 'verified',
+        ocrExtractedText: 'DIRECTORATE OF TRAINING - AC Maintenance & Chemical Cleaning. Candidate: Farhan Ali.',
+        ocrConfidence: 0.97,
+        verifiedBy: 'Platform Admin',
+        verifiedAt: '2025-11-12'
+      }
+    ],
+    joinedDate: '2021-05-18'
+  },
+  {
+    id: 'wrk-15',
+    name: 'Harpreet Singh (AC Installation & Ducting)',
+    phone: '+91 98721 88990',
+    email: 'harpreet.singh@deccangreen.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-02',
+    cooperativeName: 'Deccan Green & Environmental Labour Union',
+    serviceCategory: 'ac_installation',
+    skills: ['Heavy Split AC Wall Mount', 'Inverter Ductless Installation', 'Nitrogen Pressure Testing', 'Vibration Isolator Pads'],
+    experienceYears: 9,
+    hourlyRate: 1000,
+    rating: 4.92,
+    reviewCount: 145,
+    completedJobsCount: 230,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 0,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Begumpet / Sanathnagar',
+      lat: 17.4580,
+      lng: 78.4520
+    },
+    serviceRadiusKm: 15,
+    bio: 'Expert AC installation technician. Precision nitrogen leak testing, vacuum pump installation, and heavy bracket mounting at fixed ₹1,000.',
+    documents: [
+      {
+        id: 'doc-16',
+        workerId: 'wrk-15',
+        title: 'Certified HVAC Installation Mechanic',
+        type: 'skill_certificate',
+        fileName: 'HVAC_Install_Harpreet.pdf',
+        fileSize: '1.9 MB',
+        uploadDate: '2025-05-22',
+        status: 'verified',
+        ocrExtractedText: 'NATIONAL SKILL QUALIFICATION - HVAC Technician Installation Grade A. Harpreet Singh.',
+        ocrConfidence: 0.98,
+        verifiedBy: 'Lakshmi Bai (Deccan Green Coop)',
+        verifiedAt: '2025-05-24'
+      }
+    ],
+    joinedDate: '2019-09-01'
+  },
+  {
+    id: 'wrk-16',
+    name: 'G. Ramulu (Master Civil Mesthri)',
+    phone: '+91 98491 55432',
+    email: 'ramulu.mesthri@metroartisans.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-01',
+    cooperativeName: 'Metro Skilled Artisans & Workers Cooperative',
+    serviceCategory: 'civil_mesthri',
+    skills: ['Brick Masonry', 'Smooth Wall Plastering', 'Marble & Tile Laying', 'Waterproofing & Parapet Slab Repair'],
+    experienceYears: 16,
+    hourlyRate: 600,
+    rating: 4.97,
+    reviewCount: 240,
+    completedJobsCount: 410,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 1,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Jubilee Hills / Srinagar Colony',
+      lat: 17.4250,
+      lng: 78.4230
+    },
+    serviceRadiusKm: 15,
+    bio: 'Highly requested senior civil mesthri (తాపీ మేస్త్రి) with 16+ years of expertise in high-grade civil masonry, wall plaster finishing, and bathroom waterproofing.',
+    documents: [
+      {
+        id: 'doc-17',
+        workerId: 'wrk-16',
+        title: 'Master Civil Masonry Guild Certificate',
+        type: 'skill_certificate',
+        fileName: 'Mason_Ramulu_Guild.pdf',
+        fileSize: '2.1 MB',
+        uploadDate: '2025-04-12',
+        status: 'verified',
+        ocrExtractedText: 'ALL TELANGANA CONSTRUCTION GUILD - Grade A Master Mason. Reg: ATCG-2015-0988. Certified Master Artisan.',
+        ocrConfidence: 0.99,
+        verifiedBy: 'Rajesh Kumar (Coop Admin)',
+        verifiedAt: '2025-04-15'
+      }
+    ],
+    joinedDate: '2018-01-10'
+  },
+  {
+    id: 'wrk-17',
+    name: 'Rajesh Varma (AC Servicing)',
+    phone: '+91 98662 33441',
+    email: 'rajesh.varma@tcilf.org',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-03',
+    cooperativeName: 'Telangana Craftsmen Labour Federation',
+    serviceCategory: 'ac_servicing',
+    skills: ['Foam Jet Deep Wash', 'Condenser Coil Chemical Cleaning', 'Gas Leakage Diagnosis & R32 Topup'],
+    experienceYears: 7,
+    hourlyRate: 500,
+    rating: 4.94,
+    reviewCount: 180,
+    completedJobsCount: 310,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 0,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Kondapur / Gachibowli',
+      lat: 17.4589,
+      lng: 78.3612
+    },
+    serviceRadiusKm: 14,
+    bio: 'AC servicing technician providing prompt foam jet wash and coil descaling at the cooperative standardized ₹500/hr fee.',
+    documents: [
+      {
+        id: 'doc-18',
+        workerId: 'wrk-17',
+        title: 'NSQF Level 4 RAC Service Mechanic',
+        type: 'skill_certificate',
+        fileName: 'RAC_Servicing_Rajesh.pdf',
+        fileSize: '1.6 MB',
+        uploadDate: '2025-07-18',
+        status: 'verified',
+        ocrExtractedText: 'DIRECTORATE GENERAL OF VOCATIONAL TRAINING - Certified Air Conditioning Service Technician.',
+        ocrConfidence: 0.98,
+        verifiedBy: 'Platform Admin',
+        verifiedAt: '2025-07-20'
+      }
+    ],
+    joinedDate: '2020-03-15'
+  },
+  {
+    id: 'wrk-18',
+    name: 'Abdul Qadeer (AC Installation)',
+    phone: '+91 98488 99112',
+    email: 'abdul.qadeer@metroartisans.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-01',
+    cooperativeName: 'Metro Skilled Artisans & Workers Cooperative',
+    serviceCategory: 'ac_installation',
+    skills: ['Heavy Duty Wall Bracket Mounting', 'Precision Copper Pipe Flaring', 'Nitrogen Pressure Leak Check', 'Vacuum Pump Evacuation'],
+    experienceYears: 10,
+    hourlyRate: 1000,
+    rating: 4.96,
+    reviewCount: 205,
+    completedJobsCount: 380,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 1,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Tolichowki / Mehdipatnam',
+      lat: 17.3980,
+      lng: 78.4120
+    },
+    serviceRadiusKm: 16,
+    bio: 'Premier AC installation specialist at fixed cooperative ₹1,000 charge. Guaranteed clean drill work, level mounting, and vibration isolation pads.',
+    documents: [
+      {
+        id: 'doc-19',
+        workerId: 'wrk-18',
+        title: 'Master HVAC Installation License',
+        type: 'skill_certificate',
+        fileName: 'AC_Installation_Abdul.pdf',
+        fileSize: '1.8 MB',
+        uploadDate: '2025-09-02',
+        status: 'verified',
+        ocrExtractedText: 'STATE VOCATIONAL COUNCIL - Certified Split & Multi-Split AC Installation Specialist. Grade: Distinction.',
+        ocrConfidence: 0.99,
+        verifiedBy: 'Rajesh Kumar (Coop Admin)',
+        verifiedAt: '2025-09-05'
+      }
+    ],
+    joinedDate: '2019-02-12'
+  },
+  {
+    id: 'wrk-19',
+    name: 'T. Mallesh (Civil Mesthri & Tile Master)',
+    phone: '+91 99491 88223',
+    email: 'mallesh.mesthri@deccangreen.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-02',
+    cooperativeName: 'Deccan Green & Environmental Labour Union',
+    serviceCategory: 'civil_mesthri',
+    skills: ['Vitrified Tile Laying', 'Granite Kitchen Platform', 'Wall Crack Injection', 'Compound Wall Repair'],
+    experienceYears: 12,
+    hourlyRate: 600,
+    rating: 4.91,
+    reviewCount: 160,
+    completedJobsCount: 275,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 0,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Dilsukhnagar / Kothapet',
+      lat: 17.3688,
+      lng: 78.5247
+    },
+    serviceRadiusKm: 15,
+    bio: 'Civil mesthri known for precision tile slopes, leak-free wet area construction, and clean structural mortar bonding.',
+    documents: [
+      {
+        id: 'doc-20',
+        workerId: 'wrk-19',
+        title: 'BOCW Registered Civil Master Artisan',
+        type: 'cooperative_membership',
+        fileName: 'BOCW_Mallesh_Card.pdf',
+        fileSize: '1.4 MB',
+        uploadDate: '2025-08-11',
+        status: 'verified',
+        ocrExtractedText: 'BUILDING & OTHER CONSTRUCTION WORKERS UNION - Member Reg: BOCW-2017-7712. Active Certified Mesthri.',
+        ocrConfidence: 0.98,
+        verifiedBy: 'Lakshmi Bai (Deccan Green Coop)',
+        verifiedAt: '2025-08-14'
+      }
+    ],
+    joinedDate: '2018-05-20'
+  },
+  {
+    id: 'wrk-20',
+    name: 'P. Satyanarayana',
+    phone: '+91 98492 11990',
+    email: 'satya.electric@metroartisans.coop',
+    avatarUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=256',
+    cooperativeId: 'coop-01',
+    cooperativeName: 'Metro Skilled Artisans & Workers Cooperative',
+    serviceCategory: 'electrical',
+    skills: ['Short Circuit Troubleshooting', '3-Phase Load Balancing', 'Smart Switchboard Automation', 'Earthing Resistance Test'],
+    experienceYears: 11,
+    hourlyRate: 399,
+    rating: 4.95,
+    reviewCount: 230,
+    completedJobsCount: 390,
+    verificationStatus: 'verified',
+    availability: 'available',
+    currentWorkload: 0,
+    location: {
+      city: 'Hyderabad',
+      neighborhood: 'Somajiguda / Punjagutta',
+      lat: 17.4280,
+      lng: 78.4550
+    },
+    serviceRadiusKm: 15,
+    bio: 'Master Grade-A Wireman. Specializes in emergency sparking isolation, concealed conduit wire pulling, and heavy appliance cabling.',
+    documents: [
+      {
+        id: 'doc-21',
+        workerId: 'wrk-20',
+        title: 'Grade-A Electrical Competency Certificate',
+        type: 'skill_certificate',
+        fileName: 'ELB_Satyanarayana.pdf',
+        fileSize: '2.0 MB',
+        uploadDate: '2025-06-25',
+        status: 'verified',
+        ocrExtractedText: 'GOVERNMENT ELECTRICAL LICENSING BOARD - Supervisor & Grade-A Wireman Competency. Reg: ELB-TG-2016-112.',
+        ocrConfidence: 0.99,
+        verifiedBy: 'Rajesh Kumar (Coop Admin)',
+        verifiedAt: '2025-06-28'
+      }
+    ],
+    joinedDate: '2017-04-14'
   }
 ];
 
