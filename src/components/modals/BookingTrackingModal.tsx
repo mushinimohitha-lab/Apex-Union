@@ -256,6 +256,50 @@ export const BookingTrackingModal: React.FC<Props> = ({ booking, isOpen, onClose
           </div>
         </div>
 
+        {/* Customer Security OTP Verification Cards */}
+        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider block">
+                Job Start OTP
+              </span>
+              <p className="text-[11px] text-slate-600">Share with technician when they arrive</p>
+            </div>
+            <span className="text-lg font-mono font-black text-indigo-900 bg-white px-3 py-1 rounded-lg border border-indigo-200 shadow-2xs">
+              {booking.startOtp || '4829'}
+            </span>
+          </div>
+
+          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">
+                Completion OTP
+              </span>
+              <p className="text-[11px] text-slate-600">Share only after inspecting finished work</p>
+            </div>
+            <span className="text-lg font-mono font-black text-emerald-900 bg-white px-3 py-1 rounded-lg border border-emerald-200 shadow-2xs">
+              {booking.completionOtp || '7163'}
+            </span>
+          </div>
+        </div>
+
+        {/* Problem Photo if attached */}
+        {booking.problemImage && (
+          <div className="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+            <img
+              src={booking.problemImage}
+              alt="Problem Attached"
+              className="w-12 h-12 rounded-lg object-cover ring-1 ring-slate-300 shrink-0"
+            />
+            <div className="text-xs">
+              <span className="font-bold text-slate-900 block">Attached Problem Photo</span>
+              <p className="text-[11px] text-slate-600">
+                AI Vision Detection: {booking.detectedIssue || 'Mechanical Defect'}
+              </p>
+            </div>
+          </div>
+        )}
+
         {callSimulated && (
           <div className="mt-2 p-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-lg flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0" />

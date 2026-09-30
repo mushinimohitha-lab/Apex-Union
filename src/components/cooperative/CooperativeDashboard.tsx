@@ -29,7 +29,10 @@ import {
   Eye,
   SlidersHorizontal,
   TrendingUp,
-  Percent
+  Percent,
+  Home,
+  Wrench,
+  ShieldAlert
 } from 'lucide-react';
 import { CategoryIcon } from '../common/IconHelper';
 import { computeWorkforceAllocation } from '../../services/allocationEngine';
@@ -57,6 +60,9 @@ export const CooperativeDashboard: React.FC<CooperativeDashboardProps> = ({
     bookings,
     reviews,
     auditLogs,
+    anomalyAlerts,
+    dismissAnomalyAlert,
+    switchRole,
     addWorker,
     updateBookingStatus,
     assignWorkerToBooking,
@@ -94,6 +100,7 @@ export const CooperativeDashboard: React.FC<CooperativeDashboardProps> = ({
     | 'utilization'
     | 'analytics'
     | 'audit'
+    | 'fraud_detection'
   >('overview');
 
   // Add Worker Modal State
@@ -150,44 +157,6 @@ export const CooperativeDashboard: React.FC<CooperativeDashboardProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      {/* In-Page Navigation Bar (Back & Move Arrows) */}
-      <div className="bg-white rounded-xl p-3 border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-colors cursor-pointer group"
-          title={`Go back to ${prevPageName}`}
-        >
-          <ArrowLeft className="w-3.5 h-3.5 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back</span>
-          <span className="hidden sm:inline text-slate-500 font-normal">({prevPageName})</span>
-        </button>
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-indigo-950 bg-indigo-100 border border-indigo-300 px-2.5 py-1 rounded-md">
-            Cooperative Admin Portal
-          </span>
-          <span className="text-slate-300 hidden sm:inline">|</span>
-          <button
-            onClick={() => onNavigate && onNavigate('customer_dashboard')}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold transition-colors cursor-pointer"
-            title="Switch to Customer Portal"
-          >
-            <Users className="w-3.5 h-3.5 text-amber-600" />
-            <span>Switch to Customer Portal</span>
-          </button>
-        </div>
-
-        <button
-          onClick={onMove}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition-colors cursor-pointer group shadow-2xs"
-          title={`Move forward to ${nextPageName}`}
-        >
-          <span>Move</span>
-          <span className="hidden sm:inline font-semibold">({nextPageName})</span>
-          <ArrowRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
-        </button>
-      </div>
-
       {/* Cooperative Header & Banner */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -256,7 +225,8 @@ export const CooperativeDashboard: React.FC<CooperativeDashboardProps> = ({
           { key: 'bookings', label: `5. Bookings (${coopBookings.length})` },
           { key: 'utilization', label: '6. Utilization Radar' },
           { key: 'analytics', label: '7. Demand Analytics & AI Insights' },
-          { key: 'audit', label: '8. Activity & Audit Logs' }
+          { key: 'audit', label: '8. Activity & Audit Logs' },
+          { key: 'fraud_detection', label: `9. AI Fraud & Anomaly Alerts (${anomalyAlerts.filter(a => a.status === 'active').length})` }
         ].map(tab => (
           <button
             key={tab.key}
@@ -1026,6 +996,136 @@ export const CooperativeDashboard: React.FC<CooperativeDashboardProps> = ({
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Section 9: AI Fraud & Anomaly Detection */}
+      {activeSection === 'fraud_detection' && (
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+          <div className="pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded border border-rose-200 flex items-center gap-1.5">
+                  <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+                  <span>AI Module 4</span>
+                </span>
+                <DemoIntegrationBadge status="demo" label="Real-time Anomaly Engine" />
+              </div>
+              <h2 className="text-lg font-bold text-slate-900 mt-1">
+                AI Fraud, Collusion & Anomaly Detection Monitor
+              </h2>
+              <p className="text-xs text-slate-500">
+                Continuous background surveillance scans reviews, KYC credentials, geofence booking frequencies, and payment trails to safeguard cooperative integrity.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-900 text-white">
+                Active Alerts: {anomalyAlerts.filter(a => a.status === 'active').length}
+              </span>
+            </div>
+          </div>
+
+          {/* 4 Anomaly Type Pillars */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-xs font-bold text-slate-700 block">1. Suspicious Reviews</span>
+              <p className="text-[11px] text-slate-500 mt-0.5">Detects astroturfing, bot clusters, and reciprocal 5-star rating rings.</p>
+            </div>
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-xs font-bold text-slate-700 block">2. Duplicate Accounts</span>
+              <p className="text-[11px] text-slate-500 mt-0.5">Aadhaar/phone fuzzy matching across multi-union blacklists.</p>
+            </div>
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-xs font-bold text-slate-700 block">3. Abnormal Booking Spikes</span>
+              <p className="text-[11px] text-slate-500 mt-0.5">Geofence coordinate velocity analysis to prevent phantom surge pricing.</p>
+            </div>
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-xs font-bold text-slate-700 block">4. Unusual Payments</span>
+              <p className="text-[11px] text-slate-500 mt-0.5">Rapid QR reversal sequence and suspicious cash payout reconciliations.</p>
+            </div>
+          </div>
+
+          {/* Alert Feed */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              Live Anomaly Feed & Algorithmic Diagnosis
+            </h3>
+
+            {anomalyAlerts.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">No anomaly alerts recorded.</p>
+            ) : (
+              anomalyAlerts.map(alert => (
+                <div
+                  key={alert.id}
+                  className={`p-4 rounded-xl border transition-all ${
+                    alert.status === 'resolved'
+                      ? 'bg-slate-50/70 border-slate-200 opacity-60'
+                      : alert.severity === 'critical'
+                      ? 'bg-rose-50/80 border-rose-300 shadow-2xs'
+                      : alert.severity === 'high'
+                      ? 'bg-amber-50/80 border-amber-300 shadow-2xs'
+                      : 'bg-white border-slate-200'
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                            alert.severity === 'critical'
+                              ? 'bg-rose-600 text-white animate-pulse'
+                              : alert.severity === 'high'
+                              ? 'bg-amber-500 text-slate-950 font-bold'
+                              : 'bg-slate-200 text-slate-700'
+                          }`}
+                        >
+                          {alert.severity} SEVERITY
+                        </span>
+                        <span className="text-xs font-bold text-slate-900">{alert.title}</span>
+                        <span className="text-[10px] font-mono text-slate-400">
+                          (Confidence: {(alert.confidenceScore * 100).toFixed(0)}%)
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          • {new Date(alert.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-slate-700 leading-relaxed">
+                        {alert.description}
+                      </p>
+
+                      <div className="pt-1 flex items-center gap-3 text-[11px] text-slate-600">
+                        <span><strong>Entity:</strong> {alert.entityName}</span>
+                        <span>•</span>
+                        <span className="text-indigo-700 font-medium">
+                          <strong>Recommended AI Action:</strong> {alert.suggestedAction}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-start">
+                      {alert.status === 'resolved' ? (
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-lg flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Resolved</span>
+                        </span>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => dismissAnomalyAlert(alert.id)}
+                            className="px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-2xs transition-colors cursor-pointer"
+                          >
+                            Investigate & Resolve
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}

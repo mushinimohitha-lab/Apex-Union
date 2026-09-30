@@ -19,6 +19,9 @@ interface Props {
   worker: Worker | null;
   defaultCategory?: ServiceCategoryKey;
   initialProblem?: string;
+  problemImage?: string;
+  detectedIssue?: string;
+  priority?: 'emergency' | 'high' | 'normal';
   isOpen: boolean;
   onClose: () => void;
 }
@@ -27,6 +30,9 @@ export const BookingModal: React.FC<Props> = ({
   worker,
   defaultCategory,
   initialProblem = '',
+  problemImage,
+  detectedIssue,
+  priority,
   isOpen,
   onClose
 }) => {
@@ -68,6 +74,9 @@ export const BookingModal: React.FC<Props> = ({
         scheduledDate,
         scheduledTime,
         problemDescription: `${problemDescription} ${notes ? `(Note: ${notes})` : ''}`,
+        problemImage,
+        detectedIssue,
+        priority,
         customerAddress,
         distanceKm: 2.8,
         amount: totalAmount
@@ -165,6 +174,29 @@ export const BookingModal: React.FC<Props> = ({
               </div>
             </div>
           </div>
+
+          {problemImage && (
+            <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl flex items-center gap-3">
+              <img
+                src={problemImage}
+                alt="Problem Photo"
+                className="w-14 h-14 rounded-lg object-cover ring-1 ring-amber-300 shrink-0"
+              />
+              <div className="text-xs">
+                <span className="font-bold text-amber-900 block">
+                  Attached Photo & AI Analysis
+                </span>
+                <p className="text-[11px] text-slate-700">
+                  {detectedIssue || 'Problem Photo attached for technician'}
+                </p>
+                {priority === 'emergency' && (
+                  <span className="text-[10px] font-bold text-rose-700 bg-rose-100 px-1.5 py-0.2 rounded mt-0.5 inline-block">
+                    Emergency Priority
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>

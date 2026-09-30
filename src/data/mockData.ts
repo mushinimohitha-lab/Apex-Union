@@ -7,7 +7,8 @@ import {
   Review,
   AuditRecord,
   Complaint,
-  NotificationItem
+  NotificationItem,
+  AnomalyAlert
 } from '../types';
 
 export const DEMO_USERS: Record<string, User> = {
@@ -21,6 +22,18 @@ export const DEMO_USERS: Record<string, User> = {
     location: 'Banjara Hills, Hyderabad',
     preferredLanguage: 'en',
     createdAt: '2026-01-15'
+  },
+  cooperative_worker: {
+    id: 'wrk-01',
+    name: 'Suresh Varma',
+    email: 'suresh.varma@metroartisans.coop',
+    phone: '+91 98480 22334',
+    role: 'cooperative_worker',
+    avatarUrl: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=256',
+    location: 'Jubilee Hills (Near Road 36), Hyderabad',
+    cooperativeId: 'coop-01',
+    preferredLanguage: 'te',
+    createdAt: '2025-11-20'
   },
   cooperative_admin: {
     id: 'usr-coop-01',
@@ -260,6 +273,20 @@ export const INITIAL_WORKERS: Worker[] = [
         verifiedAt: '2025-11-22'
       }
     ],
+    practicalAssessment: {
+      score: 96,
+      evaluatedBy: 'Shri Ramachandra Rao (Master Craftsman Inspector, Metro Coop)',
+      evaluationDate: '2025-11-25',
+      passed: true,
+      notes: 'Demonstrated exceptional precision in copper and CPVC pipe joint solvent welding, 10-bar pressure hydrostatic leak testing, and rapid stoppage of live high-pressure ruptures without needing college diploma.',
+      rubrics: {
+        safetyProtocol: 98,
+        toolHandling: 96,
+        speedAndFinish: 94,
+        troubleshooting: 96
+      }
+    },
+    tradeBadge: 'Master Certified Plumber (Union Grade A)',
     joinedDate: '2019-04-12'
   },
   {
@@ -1333,3 +1360,59 @@ export const INITIAL_COMPLAINTS: Complaint[] = [
     createdAt: '2026-09-15T11:00:00Z'
   }
 ];
+
+export const INITIAL_ANOMALY_ALERTS: AnomalyAlert[] = [
+  {
+    id: 'anom-01',
+    type: 'suspicious_review',
+    severity: 'high',
+    title: 'Suspicious Review Cluster Detected',
+    description: 'AI detected 5 identical 5-star reviews submitted within 180 seconds originating from the same IP subnet for worker wrk-04.',
+    entityId: 'wrk-04',
+    entityName: 'K. Venkat (Electrician)',
+    timestamp: '2026-09-29T14:30:00Z',
+    status: 'active',
+    suggestedAction: 'Hold review score calculation and request cooperative supervisor interview.',
+    confidenceScore: 0.94
+  },
+  {
+    id: 'anom-02',
+    type: 'duplicate_account',
+    severity: 'critical',
+    title: 'Duplicate Aadhaar/Phone Number Match',
+    description: 'Phone number +91 98499 11223 matches an existing rejected applicant profile in Deccan Labour Union database.',
+    entityId: 'wrk-09',
+    entityName: 'N. Chandrasekhar',
+    timestamp: '2026-09-29T11:15:00Z',
+    status: 'investigating',
+    suggestedAction: 'Flag for manual Aadhaar QR verification before granting job dispatch rights.',
+    confidenceScore: 0.98
+  },
+  {
+    id: 'anom-03',
+    type: 'abnormal_booking_spike',
+    severity: 'medium',
+    title: 'Abnormal Geofence Booking Spike',
+    description: 'Sudden spike of 16 bookings placed in Panjagutta within 8 minutes from non-resident device IDs.',
+    entityId: 'geo-panjagutta',
+    entityName: 'Panjagutta Ward 14',
+    timestamp: '2026-09-28T18:45:00Z',
+    status: 'active',
+    suggestedAction: 'Enforce SMS OTP verification on customer checkout in Panjagutta sector.',
+    confidenceScore: 0.88
+  },
+  {
+    id: 'anom-04',
+    type: 'unusual_payment_pattern',
+    severity: 'high',
+    title: 'Rapid Payment Reversal Sequence',
+    description: '3 consecutive high-value transactions (₹4,500 each) cancelled within 60 seconds after UPI QR generation.',
+    entityId: 'usr-cust-99',
+    entityName: 'Simulated Device #992',
+    timestamp: '2026-09-27T20:10:00Z',
+    status: 'resolved',
+    suggestedAction: 'Payment gateway fraud lock triggered automatically.',
+    confidenceScore: 0.96
+  }
+];
+

@@ -3,7 +3,7 @@
  * Supporting Labour Cooperatives, Workers, Customers, and Platform Admins
  */
 
-export type UserRole = 'customer' | 'cooperative_admin' | 'platform_admin';
+export type UserRole = 'customer' | 'cooperative_worker' | 'cooperative_admin' | 'platform_admin';
 
 export type LanguageCode =
   | 'en' // English
@@ -73,6 +73,20 @@ export interface WorkerDocument {
 
 export type WorkerAvailability = 'available' | 'busy' | 'on_service' | 'off_duty';
 
+export interface PracticalAssessment {
+  score: number; // 0 - 100
+  evaluatedBy: string; // Master Craftsman / Cooperative Inspector
+  evaluationDate: string;
+  passed: boolean;
+  notes: string;
+  rubrics: {
+    safetyProtocol: number;
+    toolHandling: number;
+    speedAndFinish: number;
+    troubleshooting: number;
+  };
+}
+
 export interface Worker {
   id: string;
   name: string;
@@ -100,6 +114,8 @@ export interface Worker {
   serviceRadiusKm: number;
   bio: string;
   documents: WorkerDocument[];
+  practicalAssessment?: PracticalAssessment;
+  tradeBadge?: string;
   joinedDate: string;
 }
 
@@ -143,6 +159,11 @@ export interface Booking {
   cooperativeName: string;
   serviceCategory: ServiceCategoryKey;
   problemDescription: string;
+  problemImage?: string; // Captured / Uploaded photo of problem
+  detectedIssue?: string; // AI detected issue
+  priority?: 'emergency' | 'high' | 'normal';
+  startOtp?: string; // e.g. '4829'
+  completionOtp?: string; // e.g. '7163'
   scheduledDate: string;
   scheduledTime: string;
   serviceAmount: number;
@@ -254,4 +275,18 @@ export interface Complaint {
   description: string;
   status: 'OPEN' | 'INVESTIGATING' | 'RESOLVED';
   createdAt: string;
+}
+
+export interface AnomalyAlert {
+  id: string;
+  type: 'suspicious_review' | 'duplicate_account' | 'abnormal_booking_spike' | 'unusual_payment_pattern';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  title: string;
+  description: string;
+  entityId: string;
+  entityName: string;
+  timestamp: string;
+  status: 'active' | 'investigating' | 'resolved' | 'dismissed';
+  suggestedAction: string;
+  confidenceScore: number;
 }

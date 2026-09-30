@@ -4,6 +4,7 @@ import {
   UserRole,
   LanguageCode,
   Worker,
+  WorkerAvailability,
   Cooperative,
   ServiceCategory,
   Booking,
@@ -13,7 +14,8 @@ import {
   AuditRecord,
   Complaint,
   VerificationStatus,
-  WorkerDocument
+  WorkerDocument,
+  AnomalyAlert
 } from '../types';
 import {
   DEMO_USERS,
@@ -24,7 +26,8 @@ import {
   INITIAL_REVIEWS,
   INITIAL_NOTIFICATIONS,
   INITIAL_AUDIT_LOGS,
-  INITIAL_COMPLAINTS
+  INITIAL_COMPLAINTS,
+  INITIAL_ANOMALY_ALERTS
 } from '../data/mockData';
 import { translate } from '../utils/translations';
 
@@ -44,6 +47,8 @@ interface AppContextType {
   notifications: NotificationItem[];
   auditLogs: AuditRecord[];
   complaints: Complaint[];
+  anomalyAlerts: AnomalyAlert[];
+  dismissAnomalyAlert: (id: string) => void;
 
   // Interactive booking flows
   createBooking: (params: {
@@ -52,6 +57,9 @@ interface AppContextType {
     scheduledDate: string;
     scheduledTime: string;
     problemDescription: string;
+    problemImage?: string;
+    detectedIssue?: string;
+    priority?: 'emergency' | 'high' | 'normal';
     customerAddress: string;
     distanceKm: number;
     amount: number;
@@ -65,6 +73,7 @@ interface AppContextType {
   verifyWorkerDocument: (workerId: string, documentId: string, status: VerificationStatus, notes?: string) => void;
   addWorker: (workerData: Partial<Worker>, initialDocTitle?: string) => void;
   updateWorkerStatus: (workerId: string, status: VerificationStatus) => void;
+  updateWorkerAvailability: (workerId: string, availability: WorkerAvailability) => void;
 
   // Platform admin actions
   addNewServiceCategory: (cat: Partial<ServiceCategory>) => void;
@@ -90,6 +99,23 @@ interface AppContextType {
   setIsReviewModalOpen: (open: boolean) => void;
   isWorkerProfileModalOpen: boolean;
   setIsWorkerProfileModalOpen: (open: boolean) => void;
+  isTryDemoModalOpen: boolean;
+  setIsTryDemoModalOpen: (open: boolean) => void;
+
+  bookingDraft: {
+    problemDescription?: string;
+    problemImage?: string;
+    detectedIssue?: string;
+    priority?: 'emergency' | 'high' | 'normal';
+  };
+  setBookingDraft: React.Dispatch<
+    React.SetStateAction<{
+      problemDescription?: string;
+      problemImage?: string;
+      detectedIssue?: string;
+      priority?: 'emergency' | 'high' | 'normal';
+    }>
+  >;
 
   // Helpers
   markNotificationRead: (id: string) => void;
@@ -158,6 +184,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [complaints, setComplaints] = useState<Complaint[]>(INITIAL_COMPLAINTS);
+  const [anomalyAlerts, setAnomalyAlerts] = useState<AnomalyAlert[]>(INITIAL_ANOMALY_ALERTS);
 
   // Modals state
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
@@ -170,6 +197,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isWorkerProfileModalOpen, setIsWorkerProfileModalOpen] = useState(false);
+  const [isTryDemoModalOpen, setIsTryDemoModalOpen] = useState(false);
+  const [bookingDraft, setBookingDraft] = useState<{
+    problemDescription?: string;
+    problemImage?: string;
+    detectedIssue?: string;
+    priority?: 'emergency' | 'high' | 'normal';
+  }>({
+    problemDescription: 'Na bathroom pipe leak ayindi, urgent ga plumber kavali.',
+    problemImage: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&q=80&w=600',
+    detectedIssue: 'Severe Pipe Joint Leakage & Thread Corrosion',
+    priority: 'emergency'
+  });
 
   // Sync state to local storage
   useEffect(() => {
@@ -222,6 +261,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     scheduledDate: string;
     scheduledTime: string;
     problemDescription: string;
+    problemImage?: string;
+    detectedIssue?: string;
+    priority?: 'emergency' | 'high' | 'normal';
     customerAddress: string;
     distanceKm: number;
     amount: number;
@@ -232,6 +274,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const platformCommission = Math.round(params.amount * 0.1); // 10%
     const cooperativeShare = Math.round(params.amount * (coop.commissionRatePercent / 100));
     const workerPayout = params.amount - platformCommission;
+
+    const startOtp = String(Math.floor(1000 + Math.random() * 9000));
+    const completionOtp = String(Math.floor(1000 + Math.random() * 9000));
 
     const newBooking: Booking = {
       id: `bk-${Date.now().toString().slice(-4)}`,
@@ -247,6 +292,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       cooperativeName: coop.name,
       serviceCategory: params.serviceCategory,
       problemDescription: params.problemDescription,
+      problemImage: params.problemImage,
+      detectedIssue: params.detectedIssue,
+      priority: params.priority || 'normal',
+      startOtp,
+      completionOtp,
       scheduledDate: params.scheduledDate,
       scheduledTime: params.scheduledTime,
       serviceAmount: params.amount,
@@ -646,6 +696,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
+  const dismissAnomalyAlert = (id: string) => {
+    setAnomalyAlerts(prev =>
+      prev.map(a => (a.id === id ? { ...a, status: 'resolved' } : a))
+    );
+  };
+
+  const updateWorkerAvailability = (workerId: string, availability: WorkerAvailability) => {
+    setWorkers(prev =>
+      prev.map(w => (w.id === workerId ? { ...w, availability } : w))
+    );
+  };
+
   const markNotificationRead = (id: string) => {
     setNotifications(prev => prev.map(n => (n.id === id ? { ...n, read: true } : n)));
   };
@@ -672,6 +734,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         notifications,
         auditLogs,
         complaints,
+        anomalyAlerts,
+        dismissAnomalyAlert,
 
         createBooking,
         updateBookingStatus,
@@ -682,6 +746,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         verifyWorkerDocument,
         addWorker,
         updateWorkerStatus,
+        updateWorkerAvailability,
 
         addNewServiceCategory,
         resolveComplaint,
@@ -705,6 +770,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsReviewModalOpen,
         isWorkerProfileModalOpen,
         setIsWorkerProfileModalOpen,
+        isTryDemoModalOpen,
+        setIsTryDemoModalOpen,
+        bookingDraft,
+        setBookingDraft,
 
         markNotificationRead,
         markAllNotificationsRead

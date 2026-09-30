@@ -18,7 +18,8 @@ import {
   Info,
   ArrowLeft,
   ArrowRight,
-  Users
+  Users,
+  Wrench
 } from 'lucide-react';
 import { DemoIntegrationBadge } from '../common/DemoIntegrationBadge';
 import { AULogo } from '../common/AULogo';
@@ -53,6 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     markAllNotificationsRead,
     setSelectedBooking,
     setIsTrackingModalOpen,
+    setIsTryDemoModalOpen,
     bookings
   } = useApp();
 
@@ -69,6 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     switchRole(role);
     setShowRoleMenu(false);
     if (role === 'customer') onNavigate('customer_dashboard');
+    else if (role === 'cooperative_worker') onNavigate('worker_dashboard');
     else if (role === 'cooperative_admin') onNavigate('cooperative_dashboard');
     else if (role === 'platform_admin') onNavigate('platform_dashboard');
   };
@@ -120,44 +123,27 @@ export const Navbar: React.FC<NavbarProps> = ({
                 />
               </button>
 
-              {/* Quick Navigation Arrows */}
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                <button
-                  onClick={onBack}
-                  title={`Back to ${prevPageName}`}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5 text-slate-600 group-hover:-translate-x-0.5 transition-transform" />
-                  <span className="hidden xl:inline">Back</span>
-                </button>
-                <button
-                  onClick={onMove}
-                  title={`Move to ${nextPageName}`}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold text-amber-950 bg-amber-300/80 hover:bg-amber-300 hover:shadow-2xs transition-all cursor-pointer group"
-                >
-                  <span className="hidden xl:inline">Move</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-amber-900 group-hover:translate-x-0.5 transition-transform" />
-                </button>
-              </div>
-
-              {/* Navigation Links with Separate Customer & Cooperative Admin portals */}
+              {/* Navigation Links with Separate Operational Portals & Try Demo */}
               <nav className="hidden lg:flex items-center gap-1.5 text-sm font-medium text-slate-600">
+                {/* 1. Home Icon to view app starting page */}
                 <button
                   onClick={() => onNavigate('landing')}
-                  className={`px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer text-xs ${
+                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer text-xs ${
                     currentView === 'landing' ? 'text-slate-950 bg-slate-100 font-bold' : 'hover:text-slate-950 hover:bg-slate-50'
                   }`}
+                  title="App Starting Page"
                 >
-                  {t('nav.home')}
+                  <Home className="w-3.5 h-3.5 text-slate-700" />
+                  <span>{t('nav.home')}</span>
                 </button>
 
-                {/* SEPARATE: Customer Portal */}
+                {/* 2. Customer Portal */}
                 <button
                   onClick={() => {
                     switchRole('customer');
                     onNavigate('customer_dashboard');
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     currentView === 'customer_dashboard'
                       ? 'bg-amber-400 text-slate-950 shadow-sm ring-2 ring-amber-400/50'
                       : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
@@ -165,16 +151,33 @@ export const Navbar: React.FC<NavbarProps> = ({
                   title="Enter Customer Portal"
                 >
                   <Users className="w-3.5 h-3.5 text-amber-900" />
-                  <span>Customer Portal</span>
+                  <span>Customer</span>
                 </button>
 
-                {/* SEPARATE: Cooperative Admin */}
+                {/* 3. Cooperative Worker Portal */}
+                <button
+                  onClick={() => {
+                    switchRole('cooperative_worker');
+                    onNavigate('worker_dashboard');
+                  }}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    currentView === 'worker_dashboard'
+                      ? 'bg-amber-500 text-slate-950 shadow-sm ring-2 ring-amber-400/50'
+                      : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
+                  }`}
+                  title="Enter Cooperative Worker Portal"
+                >
+                  <Wrench className="w-3.5 h-3.5 text-amber-800" />
+                  <span>Worker Portal</span>
+                </button>
+
+                {/* 4. Cooperative Admin */}
                 <button
                   onClick={() => {
                     switchRole('cooperative_admin');
                     onNavigate('cooperative_dashboard');
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     currentView === 'cooperative_dashboard'
                       ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-500/50'
                       : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200'
@@ -182,9 +185,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   title="Enter Cooperative Admin Portal"
                 >
                   <Building2 className="w-3.5 h-3.5 text-indigo-700" />
-                  <span>Cooperative Admin</span>
+                  <span>Coop Admin</span>
                 </button>
 
+                {/* 5. Federation / Platform Admin */}
                 <button
                   onClick={() => {
                     if (currentUser.role !== 'platform_admin') switchRole('platform_admin');
@@ -196,6 +200,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <Layers className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Federation</span>
+                </button>
+
+                {/* PROMINENT: Try Demo Interactive Experience Button */}
+                <button
+                  onClick={() => setIsTryDemoModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-slate-950 font-black text-xs shadow-md transition-all cursor-pointer ring-1 ring-amber-400/50 hover:scale-[1.02]"
+                  title="Launch Complete 14-Step Interactive End-to-End Walkthrough"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-slate-950" />
+                  <span>Try Demo</span>
                 </button>
 
                 <button

@@ -10,7 +10,8 @@ import {
   Info,
   ShieldCheck,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Wrench
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -39,6 +40,8 @@ export const PageNavigationHeader: React.FC<PageNavigationHeaderProps> = ({
         return { title: 'Apex Union Home', icon: Home, badge: 'Home' };
       case 'customer_dashboard':
         return { title: 'Customer Portal', icon: Users, badge: 'Customer Mode' };
+      case 'worker_dashboard':
+        return { title: 'Cooperative Worker Portal', icon: Wrench, badge: 'Artisan Member' };
       case 'cooperative_dashboard':
         return { title: 'Cooperative Admin Portal', icon: Building2, badge: 'Admin Mode' };
       case 'platform_dashboard':
@@ -62,7 +65,7 @@ export const PageNavigationHeader: React.FC<PageNavigationHeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4">
           
-          {/* 1. BACK ARROW NAVIGATION */}
+          {/* 1. BACK ARROW NAVIGATION & HOME ICON */}
           <div className="flex items-center gap-2">
             <button
               onClick={onBack}
@@ -72,6 +75,16 @@ export const PageNavigationHeader: React.FC<PageNavigationHeaderProps> = ({
               <ArrowLeft className="w-4 h-4 text-amber-400 group-hover:-translate-x-1 transition-transform" />
               <span>Back</span>
               <span className="hidden md:inline text-slate-400 font-normal">({prevPageName})</span>
+            </button>
+
+            {/* Home Icon button to view app starting page */}
+            <button
+              onClick={() => onNavigate('landing')}
+              title="Home - View app starting page"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 hover:border-slate-500 text-xs font-semibold transition-all cursor-pointer shadow-xs"
+            >
+              <Home className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Home</span>
             </button>
           </div>
 
@@ -88,7 +101,7 @@ export const PageNavigationHeader: React.FC<PageNavigationHeaderProps> = ({
 
             <div className="hidden lg:flex items-center text-slate-500 text-xs">|</div>
 
-            {/* SEPARATE CUSTOMER & COOPERATIVE ADMIN ACCESS */}
+            {/* SEPARATE CUSTOMER, WORKER, & COOPERATIVE ADMIN ACCESS */}
             <div className="flex items-center gap-1.5">
               {/* Customer Portal Button */}
               <button
@@ -107,6 +120,23 @@ export const PageNavigationHeader: React.FC<PageNavigationHeaderProps> = ({
                 <span>Customer</span>
               </button>
 
+              {/* Worker Portal Button */}
+              <button
+                onClick={() => {
+                  switchRole('cooperative_worker');
+                  onNavigate('worker_dashboard');
+                }}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  currentView === 'worker_dashboard'
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-xs ring-2 ring-amber-400/50'
+                    : 'bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30'
+                }`}
+                title="Open Worker Portal (Jobs, practical assessment, verification, OTPs)"
+              >
+                <Wrench className="w-3.5 h-3.5" />
+                <span>Worker</span>
+              </button>
+
               {/* Cooperative Admin Button */}
               <button
                 onClick={() => {
@@ -121,7 +151,7 @@ export const PageNavigationHeader: React.FC<PageNavigationHeaderProps> = ({
                 title="Open Cooperative Admin Portal (Roster, OCR verification, allocations)"
               >
                 <Building2 className="w-3.5 h-3.5" />
-                <span>Cooperative Admin</span>
+                <span>Coop Admin</span>
               </button>
             </div>
           </div>

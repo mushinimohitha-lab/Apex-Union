@@ -9,6 +9,7 @@ import { PlatformAdminDashboard } from './components/platform/PlatformAdminDashb
 import { AIFeaturesPage } from './components/pages/AIFeaturesPage';
 import { AboutPage } from './components/pages/AboutPage';
 import { PrivacyPage } from './components/pages/PrivacyPage';
+import { WorkerDashboard } from './components/worker/WorkerDashboard';
 
 // Modals
 import { BookingModal } from './components/modals/BookingModal';
@@ -18,6 +19,7 @@ import { InvoiceModal } from './components/modals/InvoiceModal';
 import { ReviewModal } from './components/modals/ReviewModal';
 import { WorkerProfileModal } from './components/modals/WorkerProfileModal';
 import { WorkerVerificationModal } from './components/modals/WorkerVerificationModal';
+import { TryDemoModal } from './components/modals/TryDemoModal';
 import { PageNavigationHeader } from './components/common/PageNavigationHeader';
 import { ServiceCategoryKey, UserRole } from './types';
 import { ShieldCheck, UserCheck, X } from 'lucide-react';
@@ -25,6 +27,7 @@ import { ShieldCheck, UserCheck, X } from 'lucide-react';
 const VIEW_MAP: Record<string, { label: string; role?: UserRole }> = {
   landing: { label: 'Home' },
   customer_dashboard: { label: 'Customer Portal', role: 'customer' },
+  worker_dashboard: { label: 'Worker Portal', role: 'cooperative_worker' },
   cooperative_dashboard: { label: 'Cooperative Admin', role: 'cooperative_admin' },
   platform_dashboard: { label: 'Platform Admin', role: 'platform_admin' },
   ai_features: { label: 'AI Features' },
@@ -35,6 +38,7 @@ const VIEW_MAP: Record<string, { label: string; role?: UserRole }> = {
 const VIEW_ORDER = [
   'landing',
   'customer_dashboard',
+  'worker_dashboard',
   'cooperative_dashboard',
   'platform_dashboard',
   'ai_features',
@@ -62,7 +66,9 @@ const MainAppContent: React.FC = () => {
     isReviewModalOpen,
     setIsReviewModalOpen,
     isWorkerProfileModalOpen,
-    setIsWorkerProfileModalOpen
+    setIsWorkerProfileModalOpen,
+    isTryDemoModalOpen,
+    setIsTryDemoModalOpen
   } = useApp();
 
   const [history, setHistory] = useState<string[]>(['landing']);
@@ -96,6 +102,8 @@ const MainAppContent: React.FC = () => {
     // Role auto-synchronization for separate portals
     if (view === 'customer_dashboard' && currentUser.role !== 'customer') {
       switchRole('customer');
+    } else if (view === 'worker_dashboard' && currentUser.role !== 'cooperative_worker') {
+      switchRole('cooperative_worker');
     } else if (view === 'cooperative_dashboard' && currentUser.role !== 'cooperative_admin') {
       switchRole('cooperative_admin');
     } else if (view === 'platform_dashboard' && currentUser.role !== 'platform_admin') {
@@ -224,6 +232,16 @@ const MainAppContent: React.FC = () => {
           />
         )}
 
+        {currentView === 'worker_dashboard' && (
+          <WorkerDashboard
+            onNavigate={handleNavigate}
+            onBack={handleGoBack}
+            onMove={handleGoForward}
+            prevPageName={prevPageName}
+            nextPageName={nextPageName}
+          />
+        )}
+
         {currentView === 'cooperative_dashboard' && (
           <CooperativeDashboard
             onNavigate={handleNavigate}
@@ -322,6 +340,12 @@ const MainAppContent: React.FC = () => {
         data={selectedDocumentInspection}
         isOpen={!!selectedDocumentInspection}
         onClose={() => setSelectedDocumentInspection(null)}
+      />
+
+      <TryDemoModal
+        isOpen={isTryDemoModalOpen}
+        onClose={() => setIsTryDemoModalOpen(false)}
+        onNavigateView={handleNavigate}
       />
 
       {/* Customer Registration Modal (PRD Section 8) */}

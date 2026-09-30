@@ -19,43 +19,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 }) => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* In-Page Navigation Bar */}
-      <div className="bg-white rounded-xl p-3 border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold cursor-pointer transition-colors group"
-          title={`Go back to ${prevPageName}`}
-        >
-          <ArrowLeft className="w-3.5 h-3.5 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back</span>
-          <span className="hidden sm:inline text-slate-500 font-normal">({prevPageName})</span>
-        </button>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onNavigate && onNavigate('customer_dashboard')}
-            className="px-2.5 py-1 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-semibold cursor-pointer"
-          >
-            Customer Portal
-          </button>
-          <button
-            onClick={() => onNavigate && onNavigate('cooperative_dashboard')}
-            className="px-2.5 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 font-semibold cursor-pointer"
-          >
-            Cooperative Admin
-          </button>
-        </div>
-
-        <button
-          onClick={onMove}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold cursor-pointer transition-colors group shadow-2xs"
-          title={`Move forward to ${nextPageName}`}
-        >
-          <span>Move</span>
-          <span className="hidden sm:inline font-semibold">({nextPageName})</span>
-          <ArrowRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
-        </button>
-      </div>
       <div className="text-center space-y-3">
         <span className="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
           Our Founding Mission

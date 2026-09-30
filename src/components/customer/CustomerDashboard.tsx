@@ -22,7 +22,9 @@ import {
   Compass,
   MessageSquareQuote,
   ArrowLeft,
-  ArrowRight
+  ArrowRight,
+  Home,
+  Wrench
 } from 'lucide-react';
 import { CategoryIcon } from '../common/IconHelper';
 import { NaturalLanguageRequest } from './NaturalLanguageRequest';
@@ -61,7 +63,9 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
     setIsTrackingModalOpen,
     setIsPaymentModalOpen,
     setIsInvoiceModalOpen,
-    setIsReviewModalOpen
+    setIsReviewModalOpen,
+    switchRole,
+    setBookingDraft
   } = useApp();
 
   // State
@@ -150,44 +154,6 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      {/* In-Page Navigation Bar (Back & Move Arrows) */}
-      <div className="bg-white rounded-xl p-3 border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-colors cursor-pointer group"
-          title={`Go back to ${prevPageName}`}
-        >
-          <ArrowLeft className="w-3.5 h-3.5 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back</span>
-          <span className="hidden sm:inline text-slate-500 font-normal">({prevPageName})</span>
-        </button>
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-amber-950 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-md">
-            Customer Portal
-          </span>
-          <span className="text-slate-300 hidden sm:inline">|</span>
-          <button
-            onClick={() => onNavigate && onNavigate('cooperative_dashboard')}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-semibold transition-colors cursor-pointer"
-            title="Switch to Cooperative Admin Portal"
-          >
-            <Building2 className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Switch to Cooperative Admin</span>
-          </button>
-        </div>
-
-        <button
-          onClick={onMove}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition-colors cursor-pointer group shadow-2xs"
-          title={`Move forward to ${nextPageName}`}
-        >
-          <span>Move</span>
-          <span className="hidden sm:inline font-semibold">({nextPageName})</span>
-          <ArrowRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
-        </button>
-      </div>
-
       {/* Welcome Banner */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -226,12 +192,18 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
         </div>
       </div>
 
-      {/* Natural Language Problem Classifier Feature */}
+      {/* Natural Language Problem Classifier Feature with Voice, Text, and Image */}
       <NaturalLanguageRequest
         activeCategory={selectedCategory}
-        onCategorySelected={(cat, prompt) => {
+        onCategorySelected={(cat, prompt, priority, image, detectedIssue) => {
           setSelectedCategory(cat);
           setSearchQuery(prompt);
+          setBookingDraft({
+            problemDescription: prompt,
+            problemImage: image,
+            detectedIssue,
+            priority: priority || 'normal'
+          });
           setActiveTab('recommendations');
         }}
       />

@@ -35,6 +35,7 @@ import { DemoIntegrationBadge } from '../common/DemoIntegrationBadge';
 import { ApexUnionEmblem } from '../common/ApexUnionEmblem';
 import { AULogo } from '../common/AULogo';
 import { LandingTermsAndCharter } from './LandingTermsAndCharter';
+import serviceWorkersImage from '../../assets/images/service_workers_cooperative_1790755086267.jpg';
 
 interface Props {
   onNavigate: (view: string) => void;
@@ -66,6 +67,11 @@ export const LandingPage: React.FC<Props> = ({
     onNavigate('cooperative_dashboard');
   };
 
+  const handleOpenWorkerPortal = () => {
+    switchRole('cooperative_worker');
+    onNavigate('worker_dashboard');
+  };
+
   const handleJoinWorker = () => {
     switchRole('cooperative_admin');
     onNavigate('cooperative_dashboard');
@@ -78,58 +84,31 @@ export const LandingPage: React.FC<Props> = ({
 
   return (
     <div className="space-y-16 pb-16">
-      {/* In-Page Navigation Bar (Back & Move Arrows) */}
-      <div className="bg-slate-900/90 border-b border-slate-800 text-white px-4 py-2.5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold border border-slate-700 transition-colors cursor-pointer group"
-            title={`Go back to ${prevPageName}`}
-          >
-            <span className="text-amber-400 group-hover:-translate-x-0.5 transition-transform">←</span>
-            <span>Back</span>
-            <span className="hidden sm:inline text-slate-400 font-normal">({prevPageName})</span>
-          </button>
-
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400 font-medium hidden sm:inline">Portals:</span>
-            <button
-              onClick={() => handleStartBooking()}
-              className="px-2.5 py-1 rounded-md bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold transition-all text-xs cursor-pointer shadow-xs"
-            >
-              Customer Portal
-            </button>
-            <button
-              onClick={handleOpenCoopAdmin}
-              className="px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all text-xs cursor-pointer shadow-xs"
-            >
-              Cooperative Admin
-            </button>
-          </div>
-
-          <button
-            onClick={onMove}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold transition-colors cursor-pointer group shadow-xs"
-            title={`Move forward to ${nextPageName}`}
-          >
-            <span>Move</span>
-            <span className="hidden sm:inline font-semibold">({nextPageName})</span>
-            <span className="group-hover:translate-x-0.5 transition-transform">→</span>
-          </button>
+      {/* 1. Hero Section with Professional Skilled Workers & Labour Cooperatives Background Image */}
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-16 pb-24 px-4 sm:px-6 lg:px-8 border-b border-slate-800/80">
+        {/* Background Image of Diverse Skilled Trade Workers: Electricians, Plumbers, Technicians, Painters */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={serviceWorkersImage}
+            alt="Apex Union Cooperative Service Workers — Electricians, Plumbers, Technicians, Painters"
+            className="w-full h-full object-cover object-[65%_center] lg:object-center opacity-40 sm:opacity-50 lg:opacity-60"
+          />
+          {/* Subtle dark navy overlays matching Apex Union branding */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-slate-950/80" />
+          <div className="absolute inset-0 bg-indigo-950/30 mix-blend-multiply" />
         </div>
-      </div>
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 text-white pt-16 pb-24 px-4 sm:px-6 lg:px-8">
+
         {/* Ambient subtle light glow */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none z-0" />
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            {/* Left Content with subtle dark scrim for crisp readability */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left bg-slate-950/45 backdrop-blur-xs p-5 sm:p-7 rounded-3xl border border-white/5 shadow-2xl">
               {/* Emblem Tagline Ribbon */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-900/80 border border-indigo-700/70 text-xs text-indigo-200 shadow-sm">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-900/85 border border-indigo-700/80 text-xs text-indigo-200 shadow-sm">
                   <AULogo size="sm" variant="gold" showText={false} />
                   <span className="font-semibold text-white">{t('brand.name', 'APEX UNION')}</span>
                   <span className="text-slate-400">·</span>
@@ -140,12 +119,21 @@ export const LandingPage: React.FC<Props> = ({
                 <DemoIntegrationBadge status="demo" label={t('landing.working_model', 'Working Model')} />
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
                 {t('landing.hero_title_1', 'Find Trusted Skilled Workers.')}{' '}
-                <span className="text-amber-400">
+                <span className="text-amber-400 drop-shadow-sm">
                   {t('landing.hero_title_2', 'Build Stronger Cooperatives.')}
                 </span>
               </h1>
+
+              {/* Trade Badges Set representing Electricians, Plumbers, Technicians, Painters */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1 text-[11px] text-slate-300">
+                <span className="font-semibold text-amber-400">Verified Artisans:</span>
+                <span className="px-2.5 py-0.5 rounded-md bg-slate-900/80 border border-slate-700/80 text-amber-300 font-medium">⚡ Electricians</span>
+                <span className="px-2.5 py-0.5 rounded-md bg-slate-900/80 border border-slate-700/80 text-sky-300 font-medium">🔧 Plumbers</span>
+                <span className="px-2.5 py-0.5 rounded-md bg-slate-900/80 border border-slate-700/80 text-emerald-300 font-medium">❄️ Technicians</span>
+                <span className="px-2.5 py-0.5 rounded-md bg-slate-900/80 border border-slate-700/80 text-rose-300 font-medium">🎨 Painters</span>
+              </div>
 
               <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
                 {t(
@@ -154,7 +142,7 @@ export const LandingPage: React.FC<Props> = ({
                 )}
               </p>
 
-              {/* Separate Customer & Cooperative Admin Portal CTA Buttons */}
+              {/* Separate Customer, Worker & Cooperative Admin Portal CTA Buttons */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
                 <button
                   onClick={() => handleStartBooking()}
@@ -162,6 +150,15 @@ export const LandingPage: React.FC<Props> = ({
                 >
                   <Users className="w-4 h-4 text-slate-950" />
                   <span>Customer Portal: Book Artisans</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+
+                <button
+                  onClick={handleOpenWorkerPortal}
+                  className="px-5 py-3.5 text-sm font-bold text-amber-950 bg-amber-400/90 hover:bg-amber-300 border border-amber-300 rounded-xl shadow-lg hover:shadow-amber-400/20 transition-all flex items-center gap-2 group cursor-pointer"
+                >
+                  <Wrench className="w-4 h-4 text-amber-950" />
+                  <span>Worker Portal: Jobs & OTP</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </button>
 
